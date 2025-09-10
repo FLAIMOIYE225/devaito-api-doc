@@ -1,0 +1,37 @@
+{
+    "sections": [
+
+        {
+            "name": "Authentification",
+
+            "endpoints": [
+                {
+                    "name": "Login",
+                    "method": "GET"
+                },
+                
+                {
+                    "name": "Logout",
+                    "method": "POST"
+                }
+            ]      
+        },
+
+        {
+            "name": "Products",
+
+            "endpoints": [
+                {
+                    "name": "Get all products",
+                    "method": "GET"
+                },
+                
+                {
+                    "name": "Logout",
+                    "method": "POST"
+                }
+            ]         
+        }
+
+    ]
+}

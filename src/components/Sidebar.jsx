@@ -1,0 +1,92 @@
+import { useState } from 'react'
+import apiConfig from '../data/api.config.json'
+// import { useState } from 'react' 
+
+export default function Sidebar({setCurrentEndpoints, sections}){
+
+    /* States */
+    const [search, setSearch] = useState('');
+
+
+
+    /* Constantes */
+    let isCurrentSectionMatched = false
+
+
+    /* Functions & Handlers */
+    const handleSearch = (event) => {
+        setSearch(event.target.value);
+    }
+
+    // Filtre les sections selon le search : affiche la section si son nom ou au moins un endpoint correspond
+    const sectionFilter = (section) => {
+        if (!search) return true;
+
+        const searchLower = search.toLowerCase();
+
+        // Vérifie si le nom de la section correspond
+        if (section.name.toLowerCase().includes(searchLower)){ 
+            isCurrentSectionMatched = true
+            return true
+        };
+
+        // Vérifie si au moins un endpoint correspond
+        return section.endpoints.some(endpoint =>
+            endpoint.title.toLowerCase().includes(searchLower)
+        );
+    };
+
+    const endpointFilter = (endpoint) => {
+        if (isCurrentSectionMatched) return true
+        return endpoint.title.toLowerCase().includes(search.toLowerCase())
+    }
+
+
+
+    /* Effects & Memos  */
+
+
+
+    /* JSX CODE */
+    return <>
+        <div className="sidebar" id="sidebar">
+            <div className="sidebar-header">
+                <div className="logo">Devaito API Doc</div>
+                <div className="version">Version {apiConfig.version}</div>
+            </div>
+            
+            <div className="search-container">
+                <input value={search} onChange={handleSearch} type="text" className="search-input" placeholder="Find an endpoint..."/>
+                {/* {search} */}
+            </div>
+
+            <nav className="navigation">
+
+                {sections.filter(sectionFilter).map( (section) => {
+
+                    return (
+                        <div className="nav-section" key={section.name} onClick={() => setCurrentEndpoints(section.endpoints)}>
+
+                            <div className="nav-section-title">{section.name}</div>
+                            
+                            {section.endpoints.filter(endpointFilter).map( (endpoint, index) => {
+
+                                return (
+                                    <div className="nav-item" data-section="auth" key={index} onClick={() => setCurrentEndpoints(section.endpoints)}>
+                                        <div className={`nav-item-icon method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</div>
+                                        <span>{endpoint.title}</span>
+                                    </div>
+                                )
+
+                            })}
+
+                        </div>
+                    )
+
+                })}
+
+            </nav>
+
+        </div>
+    </>
+}
