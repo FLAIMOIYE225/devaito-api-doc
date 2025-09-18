@@ -8,12 +8,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
-    const [currentEndpoints, setCurrentEndpoints] = useState(sections[0].endpoints)
+    const [currentSection, setCurrentSection] = useState(sections[0]);
 
     return(
       <div className="custom-container">
-          <Sidebar setCurrentEndpoints={setCurrentEndpoints} sections={sections} />
-          <MainContent endpoints={currentEndpoints}/>
+          <Sidebar setCurrentSection={setCurrentSection} sections={sections} />
+          <MainContent currentSection={currentSection}/>
           <ToastContainer
             position="top-right"
             autoClose={3000}

@@ -173,6 +173,12 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
           >
             Code
           </button>
+          {endpoint.details && <button
+            className={`tab ${activeTab === "details" ? "active" : ""}`}
+            onClick={() => setActiveTab("details")}
+          >
+            Details
+          </button>}
         </div>
 
         {/* Contenus d’onglets */}
@@ -198,7 +204,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
                 return (
                   <div className="form-group" key={index}>
-                    <label className="form-label">{parameterName}</label>
+                    <label className="form-label">{parameterName} ({parameter.type})</label>
                     <input
                       type={parameter.inputType}
                       className="form-input"
@@ -326,6 +332,15 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
                 </SyntaxHighlighter>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === "details" && (
+          <div className='text-block active' style={{ marginTop: 40, marginBottom: 20}}>
+              <div className='text-header'>Endpoint Description</div>
+              <div className="text-content">
+                {endpoint.details}
+              </div>
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 [
     {
         "name": "Authentification",
+        "description": "The following endpoints in this section are commonly used to get and revoke user's access token.",
         "endpoints": [
             {
                 "id": "auth-login",
@@ -8,7 +9,8 @@
                 "path": "/api/login",
                 "title": "Login",
                 "isProtected": false,
-                "description": "Permet à un utilisateur de se connecter.",
+                "description": "Login a user and retrieve their access token.",
+                "details": "This endpoint returns an access token. This token must be provided in the request header (Bearer token), enabling authentication and access to the user's data.",
                 "parameters": [
                     {
                         "name": "email",
@@ -63,7 +65,8 @@
                 "path": "/api/logout",
                 "title": "Logout",
                 "isProtected": true,
-                "description": "Déconnecte l'utilisateur de la session actuelle.",
+                "description": "Disconnects the user from the current session and revoke access token.",
+                "details": "This endpoint returns an access token. This token must be provided in the request header (Bearer token), which allows the request to be authenticated and access to the user's data.",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -104,7 +107,8 @@
                 "path": "/api/user",
                 "title": "Get User",
                 "isProtected": true,
-                "description": "get info about the user and the type of his store",
+                "description": "Get info about the user and the type of his store",
+                "details": "This endpoint returns information related to a specific user and his store. You must provide the access token specific to that user in the request header.",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -118,15 +122,35 @@
                         "example": {
                             "user": {
                                 "id": 4,
-                                "name": "test",
-                                "email": "test234@test234.com",
-                                "image": 59,
+                                "name": "KOFFI DEV",
+                                "email": "flaimoiyekoffitest@gmail.com",
+                                "image": null,
                                 "status": 1,
-                                "created_at": "2025-05-07 08:04:51",
-                                "updated_at": "2025-05-07 05:54:46",
-                                "type_website": "ecommerce"
+                                "user_type": 1,
+                                "calendly_access_token": null,
+                                "calendly_refresh_token": null,
+                                "calendly_token_expires_at": null,
+                                "calendly_user_uri": null,
+                                "calendly_user_data": null,
+                                "adress": null,
+                                "phone": null,
+                                "created_at": "2025-09-10 08:44:49",
+                                "updated_at": "2025-09-10 08:44:49",
+                                "role_name": "Manager",
+                                "type_website": "ecommerce",
+                                "domain_store": "https://techshop.devaito.com",
+                                "super_admin_id": 6327
                             },
-                            "avatar": "https://test983421.devaito.com/public/tenant/tenant11428073-5eac-4263-a746-92ce9838eb34/2025/May/XE43VweBzO2pcG9EmH6l8QRdNa6eme517n8lxgti.jpg"
+                            "avatar": null,
+                            "logo_store": {
+                                "system_name": "DevAito",
+                                "admin_logo": "https://techshop.devaito.com/public/storage/2024/Sep/mznyorchKilL1Ti812Q5A7REsDcZ3GW7C2H2ZYFG.png",
+                                "admin_logo_alt": null,
+                                "admin_dark": "https://techshop.devaito.com/public/storage/2024/Sep/mznyorchKilL1Ti812Q5A7REsDcZ3GW7C2H2ZYFG.png",
+                                "admin_dark_alt": null,
+                                "favicon_logo": "https://techshop.devaito.com/public/storage/2024/Sep/0MboC61TCfNWDSWaSgvklQ6sNpyAHqCHpHKrvU62.png",
+                                "favicon_alt": null
+                            }
                         }
                     }
                 },
@@ -153,7 +177,7 @@
                 "path": "/api/get-all-orders",
                 "title": "List Orders",
                 "isProtected": false,
-                "description": "Récupérer la liste paginée des commandes (inhouse)",
+                "description": "Retrieve a paginated list of all orders in the user's store",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -218,7 +242,7 @@
                 "path": "/api/fetch-all-products",
                 "title": "List Products",
                 "isProtected": true,
-                "description": "Récupérer l'image de la clé du store",
+                "description": "Retrieve a paginated list of all products in the user's store",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -233,51 +257,79 @@
                             "products": [
                                 {
                                     "id": 2,
-                                    "name": "Product 1",
-                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
-                                    "price": 299,
+                                    "name": "Smartphone X100",
+                                    "slug": "productssmartphone-x100",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "699.99",
                                     "devise": "$",
-                                    "url": "https://test443.devaito.com/product/product-1",
+                                    "url": "https://techshop.devaito.com/product/productssmartphone-x100",
                                     "discount_type": 2,
                                     "discount_amount": null,
                                     "brand_name": null,
-                                    "brand_logo": null
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 1,
+                                            "name": "Laptops"
+                                        }
+                                    ]
                                 },
                                 {
                                     "id": 3,
-                                    "name": "Product 2",
-                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
-                                    "price": 459,
+                                    "name": "4K Ultra HD Smart TV",
+                                    "slug": "products4k-ultra-hd-smart-tv",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "1299.99",
                                     "devise": "$",
-                                    "url": "https://test443.devaito.com/product/product-2",
+                                    "url": "https://techshop.devaito.com/product/products4k-ultra-hd-smart-tv",
                                     "discount_type": 2,
                                     "discount_amount": null,
                                     "brand_name": null,
-                                    "brand_logo": null
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 2,
+                                            "name": "Smartphones"
+                                        }
+                                    ]
                                 },
                                 {
                                     "id": 4,
-                                    "name": "Product 3",
-                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
-                                    "price": 299,
+                                    "name": "Wireless Noise-Canceling Headphones",
+                                    "slug": "productswireless-noise-canceling-headphones",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "249.99",
                                     "devise": "$",
-                                    "url": "https://test443.devaito.com/product/product-3",
+                                    "url": "https://techshop.devaito.com/product/productswireless-noise-canceling-headphones",
                                     "discount_type": 2,
                                     "discount_amount": null,
                                     "brand_name": null,
-                                    "brand_logo": null
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 3,
+                                            "name": "Tablets"
+                                        }
+                                    ]
                                 },
                                 {
                                     "id": 5,
-                                    "name": "Product 4",
-                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
-                                    "price": 144,
+                                    "name": "Gaming Laptop Pro",
+                                    "slug": "productsgaming-laptop-pro",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "1599.99",
                                     "devise": "$",
-                                    "url": "https://test443.devaito.com/product/product-4",
+                                    "url": "https://techshop.devaito.com/product/productsgaming-laptop-pro",
                                     "discount_type": 2,
                                     "discount_amount": null,
                                     "brand_name": null,
-                                    "brand_logo": null
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 4,
+                                            "name": "Wearable Technology"
+                                        }
+                                    ]
                                 }
                             ],
                             "current_page": 1,
@@ -303,7 +355,7 @@
                 "path": "/api/popular-products",
                 "title": "List Popular Products",
                 "isProtected": true,
-                "description": "Obtenir les produits les plus populaires",
+                "description": "Get a list of the most popular products in a user's store",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -342,7 +394,7 @@
                 "path": "/api/get-product/{slug}",
                 "title": "Get Product By Slug",
                 "isProtected": false,
-                "description": "Obtenir les détails d’un produit à partir de son slug",
+                "description": "Get product details from its slug",
                 "parameters": [
                     {
                         "name": "slug",

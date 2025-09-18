@@ -2,9 +2,9 @@ import { useState } from 'react';
 import apiConfig from '../data/api.config.json';
 // import endpoints from '../data/endpoints.json'
 import copy from '../utils/clipborad';
-import Endpoint from './endpoint';
+import Endpoint from './Endpoint';
 
-export default function MainContent({endpoints}){
+export default function MainContent({currentSection}){
 
     /* States */
     const [token, setToken] = useState('');
@@ -47,13 +47,19 @@ export default function MainContent({endpoints}){
                     <div className="url">{apiConfig.baseShopUrl}</div>
                 </div>
 
-                {endpoints.map( (endpoint) => {
+                <div className='text-block' style={{ marginTop: 60, marginBottom: 20}}>
+                    <div className='text-header'>Section Description</div>
+                    <div className="text-content">
+                        {currentSection?.description}
+                    </div>
+                </div>
+
+                {currentSection.endpoints.map( (endpoint) => {
                     return <Endpoint endpoint={endpoint} key={endpoint.id} baseShopUrl={apiConfig.baseShopUrl} setToken={setToken} token={token} />
                 })}
 
             </div>
         </div>
-
         
     </>
 }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import apiConfig from '../data/api.config.json'
 // import { useState } from 'react' 
 
-export default function Sidebar({setCurrentEndpoints, sections}){
+export default function Sidebar({setCurrentSection, sections}){
 
     /* States */
     const [search, setSearch] = useState('');
@@ -65,18 +65,18 @@ export default function Sidebar({setCurrentEndpoints, sections}){
 
                 {sections
                 .filter(sectionFilter)
-                .sort((a, b) => a.name.localeCompare(b.name))
+                // .sort((a, b) => a.name.localeCompare(b.name))
                 .map( (section) => {
 
                     return (
-                        <div className="nav-section" key={section.name} onClick={() => setCurrentEndpoints(section.endpoints)}>
+                        <div className="nav-section" key={section.name} onClick={() => setCurrentSection(section)}>
 
                             <div className="nav-section-title">{section.name}</div>
                             
                             {section.endpoints.filter(endpointFilter).map( (endpoint, index) => {
 
                                 return (
-                                    <div className="nav-item" data-section="auth" key={index} onClick={() => setCurrentEndpoints(section.endpoints)}>
+                                    <div className="nav-item" data-section="auth" key={index} onClick={() => setCurrentSection(section.endpoints)}>
                                         <div className={`nav-item-icon method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</div>
                                         <span>{endpoint.title}</span>
                                     </div>
