@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import copy from "../utils/clipborad";
-import { getResource, postResource } from "../utils/api/requestHandler";
-import { parseUrl, buildRequestBody } from "../utils/formatters/requestFormatter"
+import { getResource, postResource, requestResource } from "../utils/api/requestHandler";
+import { parseUrl, buildRequestBody } from "../utils/formatters/requestFormatter";
+import { notifySuccess, notifyError } from "../utils/notify";
 
 export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
@@ -33,7 +34,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
   /* Constantes */
   const codeContent = endpoint.codeSamples.javascript.join("\n");
   const headers = Object.keys(endpoint.request.headers).map((key) => `${key}: ${endpoint.request.headers[key]}`).join("\n");
-  const example = JSON.stringify(endpoint.responses["200"].example, null, 4);
+  const example = JSON.stringify(endpoint.responses["200"]?.example, null, 4);
 
 
 
@@ -59,14 +60,16 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
     try {
       const url = parseUrl(baseShopUrl + endpoint.path, inputValues);
 
+      // const options = {}
+      const options = { headers: endpoint.request.headers}
       // Ajouter le  token au header dans le cas où la requête est protégé
-      const options = {}
-      if (endpoint.isProtected){
-        if (!inputValues.token) throw new Error("This endpoint is protected by a token. First obtain a token using the endpoint `/api/login`.");
-        options.headers = {
-          'Authorization': `Bearer ${inputValues.token}`
-        }
-      }
+      
+      // if (endpoint.isProtected || endpoint?.isProtected){
+      //   if (!inputValues.token) throw new Error("This endpoint is protected by a token. First obtain a token using the endpoint `/api/login`.");
+      //   options.headers['Authorization'] = `Bearer ${inputValues.token}`;
+      // }
+
+      options.headers['Authorization'] = `Bearer ${inputValues.token}`;
 
       if ( endpoint.method === 'GET'){
         const responseData = await getResource(url, options);
@@ -74,7 +77,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
         if (error) setError('');
 
-      } if (endpoint.method === 'POST'){
+      } else if (endpoint.method === 'POST'){
           // const body = buildRequestBody(endpoint.parameters, inputValues);
           // const responseData = await postResource(url + endpoint.path, body);
           const responseData = await postResource(url, requestBody, options);
@@ -85,10 +88,19 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
           }
 
           if (error) setError('');
+      } else {
+        const responseData = await requestResource(url, endpoint.method, requestBody, options);
+        setResponse(responseData);
+
+        if (error) setError('');
       }
+
+      notifySuccess("Request treated with success!");
+
     } catch (error){
       console.error(`${error.message}`);
       setError(`${error.message}`);
+      notifyError("Error during query processing!");
     }
 
     setIsloading(false);

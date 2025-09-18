@@ -234,7 +234,7 @@ body {
 }
 
 .nav-item-icon {
-    width: 2.5rem;
+    /* width: 2.5rem; */
     height: 1.5rem;
     display: flex;
     align-items: center;
@@ -246,6 +246,9 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.025em;
     flex-shrink: 0;
+
+    /* TESTS */
+    width: 3rem;
 }
 
 .method-get { 

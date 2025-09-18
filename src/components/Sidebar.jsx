@@ -20,6 +20,7 @@ export default function Sidebar({setCurrentEndpoints, sections}){
 
     // Filtre les sections selon le search : affiche la section si son nom ou au moins un endpoint correspond
     const sectionFilter = (section) => {
+        isCurrentSectionMatched = false
         if (!search) return true;
 
         const searchLower = search.toLowerCase();
@@ -62,7 +63,10 @@ export default function Sidebar({setCurrentEndpoints, sections}){
 
             <nav className="navigation">
 
-                {sections.filter(sectionFilter).map( (section) => {
+                {sections
+                .filter(sectionFilter)
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map( (section) => {
 
                     return (
                         <div className="nav-section" key={section.name} onClick={() => setCurrentEndpoints(section.endpoints)}>

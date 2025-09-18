@@ -1,7 +1,6 @@
 [
     {
         "name": "Authentification",
-
         "endpoints": [
             {
                 "id": "auth-login",
@@ -9,27 +8,141 @@
                 "path": "/api/login",
                 "title": "Login",
                 "isProtected": false,
-                "description": "API key authentication to obtain a token",
-
+                "description": "Permet à un utilisateur de se connecter.",
                 "parameters": [
-                    { "name": "email", "in": "body", "type": "string", "inputType":"email", "example": "exemple@gmail.com" },
-                    { "name": "password", "in": "body", "type": "string", "inputType":"password", "example": "mypassword" }
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "email",
+                        "example": "user@example.com"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "password",
+                        "example": "password123"
+                    }
                 ],
-                    "request": {
-                    "headers": { "Content-Type": "application/json", "Accept": "application/json" },
-                    "body": { "email": "string", "password": "string" }
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "email": "string",
+                        "password": "string"
+                    }
                 },
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "example": { "token": "11|abcxyz..." }
+                        "example": {
+                            "token": "11|nv4dxvDlX2rkrrc9veXq7lDVuIBe19OMAy0dnNSg"
+                        }
                     }
                 },
-                    "codeSamples": {
-                    "javascript": ["const response = await fetch('https://[shop-name].devaito.com/api/login', {", "  method: 'POST',", "  headers: {", "    'Content-Type': 'application/json',", "    'Authorization': 'Bearer sk_live_your_api_key'", "  }", "});", "const data = await response.json();"]
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/login', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ email: 'user@example.com', password: 'password123' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/login', json={'email': 'user@example.com', 'password': 'password123'})"
+                }
+            },
+            {
+                "id": "auth-logout",
+                "method": "POST",
+                "path": "/api/logout",
+                "title": "Logout",
+                "isProtected": true,
+                "description": "Déconnecte l'utilisateur de la session actuelle.",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "status": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/logout', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/logout', headers={'Authorization': 'Bearer token'})"
                 }
             }
-        ]         
+        ]
+    },
+    {
+        "name": "Users",
+        "endpoints": [
+            {
+                "id": "user-get",
+                "method": "GET",
+                "path": "/api/user",
+                "title": "Get User",
+                "isProtected": true,
+                "description": "get info about the user and the type of his store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "user": {
+                                "id": 4,
+                                "name": "test",
+                                "email": "test234@test234.com",
+                                "image": 59,
+                                "status": 1,
+                                "created_at": "2025-05-07 08:04:51",
+                                "updated_at": "2025-05-07 05:54:46",
+                                "type_website": "ecommerce"
+                            },
+                            "avatar": "https://test983421.devaito.com/public/tenant/tenant11428073-5eac-4263-a746-92ce9838eb34/2025/May/XE43VweBzO2pcG9EmH6l8QRdNa6eme517n8lxgti.jpg"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/user', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/user', headers={'Authorization': 'Bearer token'})"
+                }
+            }
+        ]
     },
     {
         "name": "Orders",
@@ -39,11 +152,13 @@
                 "method": "GET",
                 "path": "/api/get-all-orders",
                 "title": "List Orders",
-                "isProtected": true,
-                "description": "Retrieves list of all orders with pagination",
+                "isProtected": false,
+                "description": "Récupérer la liste paginée des commandes (inhouse)",
                 "parameters": [],
                 "request": {
-                    "headers": { "Accept": "application/json" }
+                    "headers": {
+                        "Accept": "application/json"
+                    }
                 },
                 "responses": {
                     "200": {
@@ -52,41 +167,44 @@
                             "success": true,
                             "data": {
                                 "current_page": 1,
-                                "data": [],
-                                "first_page_url": "https://shopfile.devaito.com/api/get-all-orders?page=1",
-                                "from": null,
-                                "last_page": 1,
-                                "last_page_url": "https://shopfile.devaito.com/api/get-all-orders?page=1",
-                                "links": [
+                                "data": [
                                     {
-                                        "url": null,
-                                        "label": "&laquo; Previous",
-                                        "active": false
-                                    },
-                                    {
-                                        "url": "https://shopfile.devaito.com/api/get-all-orders?page=1",
-                                        "label": "1",
-                                        "active": true
-                                    },
-                                    {
-                                        "url": null,
-                                        "label": "Next &raquo;",
-                                        "active": false
+                                        "id": 2,
+                                        "total_payable_amount": "200",
+                                        "order_code": "iv-113034250806",
+                                        "created_at": "2025-08-06 11:30:34",
+                                        "read_at": null,
+                                        "delivery_status": "2",
+                                        "payment_status": "2",
+                                        "customer_name": "test",
+                                        "guest_customer": null,
+                                        "customer_id": "2",
+                                        "guest_customer_id": null,
+                                        "total_product": "1"
                                     }
                                 ],
+                                "first_page_url": "https://test44323.devaito.com/api/get-all-orders?page=1",
+                                "from": 1,
+                                "last_page": 1,
+                                "last_page_url": "https://test44323.devaito.com/api/get-all-orders?page=1",
+                                "links": [
+                                    null
+                                ],
                                 "next_page_url": null,
-                                "path": "https://shopfile.devaito.com/api/get-all-orders",
+                                "path": "https://test44323.devaito.com/api/get-all-orders",
                                 "per_page": 10,
                                 "prev_page_url": null,
-                                "to": null,
-                                "total": 0
+                                "to": 1,
+                                "total": 1
                             }
                         }
                     }
                 },
                 "codeSamples": {
-                    "javascript": ["const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products');"],
-                    "python": ["import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products')"]
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-all-orders');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-all-orders')"
                 }
             }
         ]
@@ -99,43 +217,84 @@
                 "method": "GET",
                 "path": "/api/fetch-all-products",
                 "title": "List Products",
-                "isProtected": false,
-                "description": "Retrieves list of all products with pagination",
+                "isProtected": true,
+                "description": "Récupérer l'image de la clé du store",
                 "parameters": [],
                 "request": {
-                    "headers": { "Accept": "application/json" }
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
                 },
                 "responses": {
-                "200": {
-                    "description": "OK",
-                    "example": {
-                        "products": [
-                            {
-                                "id": 2,
-                                "name": "Product 1",
-                                "slug": "product-1",
-                                "image": "https://shopfile.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
-                                "price": "299.00",
-                                "devise": "$",
-                                "url": "https://shopfile.devaito.com/product/product-1",
-                                "discount_type": 2,
-                                "discount_amount": null,
-                                "brand_name": null,
-                                "brand_logo": null,
-                                "categories": [
-                                    {
-                                        "id": 1,
-                                        "name": "Category 1"
-                                    }
-                                ]
-                            }
-                        ]
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "products": [
+                                {
+                                    "id": 2,
+                                    "name": "Product 1",
+                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": 299,
+                                    "devise": "$",
+                                    "url": "https://test443.devaito.com/product/product-1",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "Product 2",
+                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": 459,
+                                    "devise": "$",
+                                    "url": "https://test443.devaito.com/product/product-2",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null
+                                },
+                                {
+                                    "id": 4,
+                                    "name": "Product 3",
+                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": 299,
+                                    "devise": "$",
+                                    "url": "https://test443.devaito.com/product/product-3",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null
+                                },
+                                {
+                                    "id": 5,
+                                    "name": "Product 4",
+                                    "image": "https://test443.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": 144,
+                                    "devise": "$",
+                                    "url": "https://test443.devaito.com/product/product-4",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null
+                                }
+                            ],
+                            "current_page": 1,
+                            "last_page": 1
+                        }
                     }
-                }
                 },
                 "codeSamples": {
-                "javascript": ["const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products');"],
-                "python": ["import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products')"]
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products', headers={'Authorization': 'Bearer token'})"
                 }
             },
             {
@@ -144,10 +303,12 @@
                 "path": "/api/popular-products",
                 "title": "List Popular Products",
                 "isProtected": true,
-                "description": "Retrieves list of all popular products with pagination",
+                "description": "Obtenir les produits les plus populaires",
                 "parameters": [],
                 "request": {
-                    "headers": { "Accept": "application/json" }
+                    "headers": {
+                        "Accept": "application/json"
+                    }
                 },
                 "responses": {
                     "200": {
@@ -157,47 +318,22 @@
                             "data": [
                                 {
                                     "id": 2,
-                                    "name": "Product 1",
-                                    "permalink": "product-1",
+                                    "name": "Location de voiture de luxe",
+                                    "permalink": "location-voiture-luxe",
                                     "thumbnail_image": "17",
-                                    "orders_count": 0,
-                                    "orders_sum_unit_price": null,
-                                    "orders_sum_quantity": null
-                                },
-                                {
-                                    "id": 3,
-                                    "name": "Product 2",
-                                    "permalink": "product-2",
-                                    "thumbnail_image": "17",
-                                    "orders_count": 0,
-                                    "orders_sum_unit_price": null,
-                                    "orders_sum_quantity": null
-                                },
-                                {
-                                    "id": 4,
-                                    "name": "Product 3",
-                                    "permalink": "product-3",
-                                    "thumbnail_image": "17",
-                                    "orders_count": 0,
-                                    "orders_sum_unit_price": null,
-                                    "orders_sum_quantity": null
-                                },
-                                {
-                                    "id": 5,
-                                    "name": "Product 4",
-                                    "permalink": "product-4",
-                                    "thumbnail_image": "17",
-                                    "orders_count": 0,
-                                    "orders_sum_unit_price": null,
-                                    "orders_sum_quantity": null
+                                    "orders_count": 1,
+                                    "orders_sum_unit_price": 200,
+                                    "orders_sum_quantity": "1"
                                 }
                             ]
                         }
                     }
                 },
                 "codeSamples": {
-                "javascript": ["const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products');"],
-                "python": ["import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products')"]
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/popular-products');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/popular-products')"
                 }
             },
             {
@@ -205,13 +341,152 @@
                 "method": "GET",
                 "path": "/api/get-product/{slug}",
                 "title": "Get Product By Slug",
-                "isProtected": true,
-                "description": "Get a specific product by slug",
+                "isProtected": false,
+                "description": "Obtenir les détails d’un produit à partir de son slug",
                 "parameters": [
-                    { "name": "slug", "in": "query", "type": "string", "inputType":"text", "example": "product-name" }
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "location-voiture-luxe"
+                    }
                 ],
                 "request": {
-                    "headers": { "Accept": "application/json" }
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 2,
+                            "name": "Location de voiture de luxe",
+                            "description": "<p><strong>Elevate your daily routine</strong> Whether you need something to simplify your day-to-day activities or add a touch of sophistication...</p>",
+                            "image": "https://test44323.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                            "price": "200.00",
+                            "devise": "$",
+                            "url": "https://test44323.devaito.com/product/location-voiture-luxe",
+                            "discount_type": 2,
+                            "discount_amount": null,
+                            "brand_name": null,
+                            "brand_logo": null,
+                            "categories": [
+                                {
+                                    "id": 1,
+                                    "name": "Voitures Neuves"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-product/location-voiture-luxe');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-product/location-voiture-luxe')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Categories",
+        "endpoints": [
+            {
+                "id": "categories-list",
+                "method": "GET",
+                "path": "/api/categories",
+                "title": "List Categories",
+                "isProtected": false,
+                "description": "Lister toutes les catégories",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": []
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/categories')"
+                }
+            },
+            {
+                "id": "post-category",
+                "method": "POST",
+                "path": "/api/categories",
+                "title": "Create Category",
+                "isProtected": false,
+                "description": "Ajouter une nouvelle catégorie",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Catégorie 1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Catégorie ajoutée",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Catégorie 1' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/categories', json={'name': 'Catégorie 1'})"
+                }
+            },
+            {
+                "id": "category-by-id",
+                "method": "GET",
+                "path": "/api/categories/{id}",
+                "title": "Get Category",
+                "isProtected": false,
+                "description": "Obtenir une catégorie par ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
                 },
                 "responses": {
                     "200": {
@@ -220,8 +495,2372 @@
                     }
                 },
                 "codeSamples": {
-                "javascript": ["const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products');"],
-                "python": ["import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products')"]
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/categories/1')"
+                }
+            },
+            {
+                "id": "update-category",
+                "method": "PUT",
+                "path": "/api/categories/{id}",
+                "title": "Update Category",
+                "isProtected": false,
+                "description": "Modifier une catégorie",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Nouveau nom de catégorie"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Nouveau nom de catégorie' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/categories/1', json={'name': 'Nouveau nom de catégorie'})"
+                }
+            },
+            {
+                "id": "delete-category",
+                "method": "DELETE",
+                "path": "/api/categories/{id}",
+                "title": "Delete Category",
+                "isProtected": false,
+                "description": "Supprimer une catégorie",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/categories/1')"
+                }
+            },
+            {
+                "id": "fetch-categories",
+                "method": "GET",
+                "path": "/api/fetch-categories",
+                "title": "Fetch Categories",
+                "isProtected": false,
+                "description": "Get all product categories",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "entities": [
+                                {
+                                    "id": 1,
+                                    "name": "Men\\s Clothing",
+                                    "url": "category-1",
+                                    "slug": "category-1",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "Women\\s Clothing",
+                                    "url": "category-2",
+                                    "slug": "category-2",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "Children\\s Apparel",
+                                    "url": "category-3",
+                                    "slug": "category-3",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 4,
+                                    "name": "Footwear",
+                                    "url": "category-4",
+                                    "slug": "category-4",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 5,
+                                    "name": "Accessories",
+                                    "url": "category-5",
+                                    "slug": "category-5",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 6,
+                                    "name": "Activewear",
+                                    "url": "category-6",
+                                    "slug": "category-6",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 7,
+                                    "name": "Seasonal Collections",
+                                    "url": "category-7",
+                                    "slug": "category-7",
+                                    "image": "/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 8,
+                                    "name": "Sustainable Fashion",
+                                    "url": "category-8",
+                                    "slug": "category-8",
+                                    "image": "/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-categories');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-categories')"
+                }
+            },
+            {
+                "id": "products-by-category",
+                "method": "GET",
+                "path": "/api/fetch-categories-product/{permalink}",
+                "title": "Get Products By Category",
+                "isProtected": false,
+                "description": "Get products by category permalink",
+                "parameters": [
+                    {
+                        "name": "permalink",
+                        "in": "path",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "category-1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": []
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-categories-product/category-1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-categories-product/category-1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Platforms",
+        "endpoints": [
+            {
+                "id": "platforms-list",
+                "method": "GET",
+                "path": "/api/platforms",
+                "title": "List Platforms",
+                "isProtected": false,
+                "description": "Liste des plateformes",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "name": "Platform 1",
+                                "icon": "icon.png",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platforms')"
+                }
+            },
+            {
+                "id": "post-platform",
+                "method": "POST",
+                "path": "/api/platforms",
+                "title": "Create Platform",
+                "isProtected": false,
+                "description": "Créer une nouvelle plateforme",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Platform 2"
+                    },
+                    {
+                        "name": "icon",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "icon2.png"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "icon": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plateforme créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "name": "Platform 2",
+                            "icon": "icon2.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Platform 2', icon: 'icon2.png' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/platforms', json={'name': 'Platform 2', 'icon': 'icon2.png'})"
+                }
+            },
+            {
+                "id": "platform-by-id",
+                "method": "GET",
+                "path": "/api/platforms/{id}",
+                "title": "Get Platform",
+                "isProtected": false,
+                "description": "Détails d'une plateforme",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Platform 1",
+                            "icon": "icon.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platforms/1')"
+                }
+            },
+            {
+                "id": "update-platform",
+                "method": "PUT",
+                "path": "/api/platforms/{id}",
+                "title": "Update Platform",
+                "isProtected": false,
+                "description": "Mettre à jour une plateforme",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Updated Platform"
+                    },
+                    {
+                        "name": "icon",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_icon.png"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "icon": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Updated Platform",
+                            "icon": "updated_icon.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Updated Platform', icon: 'updated_icon.png' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/platforms/1', json={'name': 'Updated Platform', 'icon': 'updated_icon.png'})"
+                }
+            },
+            {
+                "id": "delete-platform",
+                "method": "DELETE",
+                "path": "/api/platforms/{id}",
+                "title": "Delete Platform",
+                "isProtected": false,
+                "description": "Supprimer une plateforme",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/platforms/1')"
+                }
+            },
+            {
+                "id": "platform-connections",
+                "method": "GET",
+                "path": "/api/platform-connections",
+                "title": "List Connected Accounts",
+                "isProtected": false,
+                "description": "Lister les comptes connectés de l'utilisateur",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "accounts": [
+                                {
+                                    "platform": "facebook",
+                                    "name": "John Doe",
+                                    "expires_at": "2025-08-22 08:13:42"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platform-connections');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platform-connections')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Resolutions",
+        "endpoints": [
+            {
+                "id": "resolutions-list",
+                "method": "GET",
+                "path": "/api/resolutions",
+                "title": "List Resolutions",
+                "isProtected": false,
+                "description": "Liste des résolutions",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "name": "Resolution 1",
+                                "width": 1920,
+                                "height": 1080,
+                                "platform_id": 1,
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/resolutions')"
+                }
+            },
+            {
+                "id": "post-resolution",
+                "method": "POST",
+                "path": "/api/resolutions",
+                "title": "Create Resolution",
+                "isProtected": false,
+                "description": "Créer une nouvelle résolution",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Resolution 2"
+                    },
+                    {
+                        "name": "width",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 2560
+                    },
+                    {
+                        "name": "height",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1440
+                    },
+                    {
+                        "name": "platform_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "width": "integer",
+                        "height": "integer",
+                        "platform_id": "integer"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Résolution créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "name": "Resolution 2",
+                            "width": 2560,
+                            "height": 1440,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Resolution 2', width: 2560, height: 1440, platform_id: 1 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/resolutions', json={'name': 'Resolution 2', 'width': 2560, 'height': 1440, 'platform_id': 1})"
+                }
+            },
+            {
+                "id": "resolution-by-id",
+                "method": "GET",
+                "path": "/api/resolutions/{id}",
+                "title": "Get Resolution",
+                "isProtected": false,
+                "description": "Détails d'une résolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Resolution 1",
+                            "width": 1920,
+                            "height": 1080,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/resolutions/1')"
+                }
+            },
+            {
+                "id": "update-resolution",
+                "method": "PUT",
+                "path": "/api/resolutions/{id}",
+                "title": "Update Resolution",
+                "isProtected": false,
+                "description": "Mettre à jour une résolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Updated Resolution"
+                    },
+                    {
+                        "name": "width",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3840
+                    },
+                    {
+                        "name": "height",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 2160
+                    },
+                    {
+                        "name": "platform_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "width": "integer",
+                        "height": "integer",
+                        "platform_id": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Updated Resolution",
+                            "width": 3840,
+                            "height": 2160,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Updated Resolution', width: 3840, height: 2160, platform_id: 1 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/resolutions/1', json={'name': 'Updated Resolution', 'width': 3840, 'height': 2160, 'platform_id': 1})"
+                }
+            },
+            {
+                "id": "delete-resolution",
+                "method": "DELETE",
+                "path": "/api/resolutions/{id}",
+                "title": "Delete Resolution",
+                "isProtected": false,
+                "description": "Supprimer une résolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/resolutions/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Posts",
+        "endpoints": [
+            {
+                "id": "posts-list",
+                "method": "GET",
+                "path": "/api/posts",
+                "title": "List Posts",
+                "isProtected": false,
+                "description": "Liste des publications",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "user_id": 1,
+                                "image": "post_image.png",
+                                "template": "template1",
+                                "caption": "This is a post caption",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/posts')"
+                }
+            },
+            {
+                "id": "post-post",
+                "method": "POST",
+                "path": "/api/posts",
+                "title": "Create Post",
+                "isProtected": false,
+                "description": "Créer une nouvelle publication",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "image",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "new_post_image.png"
+                    },
+                    {
+                        "name": "template",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "new_template"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "This is a new post"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "image": "string",
+                        "template": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Publication créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "user_id": 1,
+                            "image": "new_post_image.png",
+                            "template": "new_template",
+                            "caption": "This is a new post",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, image: 'new_post_image.png', template: 'new_template', caption: 'This is a new post' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/posts', json={'user_id': 1, 'image': 'new_post_image.png', 'template': 'new_template', 'caption': 'This is a new post'})"
+                }
+            },
+            {
+                "id": "post-by-id",
+                "method": "GET",
+                "path": "/api/posts/{id}",
+                "title": "Get Post",
+                "isProtected": false,
+                "description": "Détails d'une publication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "image": "post_image.png",
+                            "template": "template1",
+                            "caption": "This is a post caption",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/posts/1')"
+                }
+            },
+            {
+                "id": "update-post",
+                "method": "PUT",
+                "path": "/api/posts/{id}",
+                "title": "Update Post",
+                "isProtected": false,
+                "description": "Mettre à jour une publication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "image",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_post_image.png"
+                    },
+                    {
+                        "name": "template",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_template"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "This is an updated post"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "image": "string",
+                        "template": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "image": "updated_post_image.png",
+                            "template": "updated_template",
+                            "caption": "This is an updated post",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, image: 'updated_post_image.png', template: 'updated_template', caption: 'This is an updated post' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/posts/1', json={'user_id': 1, 'image': 'updated_post_image.png', 'template': 'updated_template', 'caption': 'This is an updated post'})"
+                }
+            },
+            {
+                "id": "delete-post",
+                "method": "DELETE",
+                "path": "/api/posts/{id}",
+                "title": "Delete Post",
+                "isProtected": false,
+                "description": "Supprimer une publication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/posts/1')"
+                }
+            },
+            {
+                "id": "update-post-job",
+                "method": "PUT",
+                "path": "/api/posts/{id}/{job_id}",
+                "title": "Update Post Job ID",
+                "isProtected": false,
+                "description": "Met à jour le champ job_id d'un post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "123"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "message": "Mise à jour réussie"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1/123', {",
+                        "  method: 'PUT'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/posts/1/123')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Campaigns",
+        "isProtected": true,
+        "endpoints": [
+            {
+                "id": "campaigns-list",
+                "method": "GET",
+                "path": "/api/campaigns",
+                "title": "List Campaigns",
+                "isProtected": true,
+                "description": "Récupérer toutes les campagnes",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "user_id": 1,
+                                "topic": "Nouveau sujet de campagne",
+                                "publish_at": "2023-04-01T12:00:00Z",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/campaigns')"
+                }
+            },
+            {
+                "id": "post-campaign",
+                "method": "POST",
+                "path": "/api/campaigns",
+                "title": "Create Campaign",
+                "isProtected": true,
+                "description": "Créer une nouvelle campagne",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "topic",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Campagne de test"
+                    },
+                    {
+                        "name": "publish_at",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2023-04-01T12:00:00Z"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "topic": "string",
+                        "publish_at": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campagne créée avec succès",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne de test",
+                            "publish_at": "2023-04-01T12:00:00Z",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, topic: 'Campagne de test', publish_at: '2023-04-01T12:00:00Z' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/campaigns', json={'user_id': 1, 'topic': 'Campagne de test', 'publish_at': '2023-04-01T12:00:00Z'})"
+                }
+            },
+            {
+                "id": "campaign-by-id",
+                "method": "GET",
+                "path": "/api/campaigns/{id}",
+                "title": "Get Campaign",
+                "isProtected": false,
+                "description": "Récupérer une campagne par son identifiant",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne de lancement",
+                            "publish_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/campaigns/1')"
+                }
+            },
+            {
+                "id": "update-campaign",
+                "method": "PUT",
+                "path": "/api/campaigns/{id}",
+                "title": "Update Campaign",
+                "isProtected": false,
+                "description": "Mettre à jour une campagne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "topic",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Campagne mise à jour"
+                    },
+                    {
+                        "name": "publish_at",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2023-05-01T12:00:00Z"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "topic": "string",
+                        "publish_at": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne mise à jour",
+                            "publish_at": "2023-05-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ topic: 'Campagne mise à jour', publish_at: '2023-05-01T12:00:00Z' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/campaigns/1', json={'topic': 'Campagne mise à jour', 'publish_at': '2023-05-01T12:00:00Z'})"
+                }
+            },
+            {
+                "id": "delete-campaign",
+                "method": "DELETE",
+                "path": "/api/campaigns/{id}",
+                "title": "Delete Campaign",
+                "isProtected": false,
+                "description": "Supprimer une campagne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/campaigns/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Templates",
+        "endpoints": [
+            {
+                "id": "templates-list",
+                "method": "GET",
+                "path": "/api/templates",
+                "title": "List Templates",
+                "isProtected": false,
+                "description": "Lister tous les templates",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": []
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/templates')"
+                }
+            },
+            {
+                "id": "post-template",
+                "method": "POST",
+                "path": "/api/templates",
+                "title": "Create Template",
+                "isProtected": false,
+                "description": "Ajouter un nouveau template",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Template 1"
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "category_id": "integer"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Template ajouté",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Template 1', category_id: 3 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/templates', json={'name': 'Template 1', 'category_id': 3})"
+                }
+            },
+            {
+                "id": "template-by-id",
+                "method": "GET",
+                "path": "/api/templates/{id}",
+                "title": "Get Template",
+                "isProtected": false,
+                "description": "Obtenir un template par ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/templates/1')"
+                }
+            },
+            {
+                "id": "update-template",
+                "method": "PUT",
+                "path": "/api/templates/{id}",
+                "title": "Update Template",
+                "isProtected": false,
+                "description": "Modifier un template",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Template 1"
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "category_id": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Template 1', category_id: 3 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/templates/1', json={'name': 'Template 1', 'category_id': 3})"
+                }
+            },
+            {
+                "id": "delete-template",
+                "method": "DELETE",
+                "path": "/api/templates/{id}",
+                "title": "Delete Template",
+                "isProtected": false,
+                "description": "Supprimer un template",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/templates/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Facebook Posts",
+        "endpoints": [
+            {
+                "id": "facebook-publish-post-job",
+                "method": "POST",
+                "path": "/api/facebook/publish-post-job",
+                "title": "Publish Facebook Post Job",
+                "isProtected": false,
+                "description": "Publier un post sur Facebook avec un job planifié",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Voici un nouveau post sur Facebook!"
+                    },
+                    {
+                        "name": "datePublish",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2025-04-30 10:00"
+                    },
+                    {
+                        "name": "pageId",
+                        "in": "body",
+                        "type": "array",
+                        "inputType": "text",
+                        "example": [
+                            "1234567890",
+                            "0987654321"
+                        ]
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string",
+                        "datePublish": "string",
+                        "pageId": "array"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "message": "Job planifié avec succès",
+                            "job_id": 123,
+                            "timezone_used": "Africa/Casablanca",
+                            "execution_time_utc": "2025-04-30T09:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/publish-post-job', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Voici un nouveau post sur Facebook!', datePublish: '2025-04-30 10:00', pageId: ['1234567890', '0987654321'] })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/facebook/publish-post-job', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Voici un nouveau post sur Facebook!', 'datePublish': '2025-04-30 10:00', 'pageId': ['1234567890', '0987654321']})"
+                }
+            },
+            {
+                "id": "facebook-publish-post",
+                "method": "POST",
+                "path": "/api/facebook/publish-post",
+                "title": "Publish Facebook Post",
+                "isProtected": false,
+                "description": "Publier un post sur une ou plusieurs pages Facebook instantanément",
+                "parameters": [
+                    {
+                        "name": "page_id",
+                        "in": "body",
+                        "type": "array",
+                        "inputType": "text",
+                        "example": [
+                            "1234567890",
+                            "0987654321"
+                        ]
+                    },
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Voici un nouveau post sur Facebook!"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "page_id": "array",
+                        "imageUrl": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "results": [
+                                {
+                                    "page_id": "1234567890",
+                                    "success": true,
+                                    "url": "https://www.facebook.com/1234567890/posts/12345",
+                                    "post_id": "12345",
+                                    "message": "Post publié avec succès"
+                                },
+                                {
+                                    "page_id": "0987654321",
+                                    "success": false,
+                                    "error": {
+                                        "message": "Erreur de publication"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/publish-post', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ page_id: ['1234567890', '0987654321'], imageUrl: 'https://example.com/image.jpg', caption: 'Voici un nouveau post sur Facebook!' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/facebook/publish-post', json={'page_id': ['1234567890', '0987654321'], 'imageUrl': 'https://example.com/image.jpg', 'caption': 'Voici un nouveau post sur Facebook!'})"
+                }
+            },
+            {
+                "id": "facebook-pages",
+                "method": "GET",
+                "path": "/api/facebook/pages",
+                "title": "Get Facebook Pages",
+                "isProtected": false,
+                "description": "Récupérer les pages Facebook de l'utilisateur",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "pages": [
+                                {
+                                    "name": "Page 1",
+                                    "page_id": "1234567890",
+                                    "image_url": "https://graph.facebook.com/1234567890/picture"
+                                },
+                                {
+                                    "name": "Page 2",
+                                    "page_id": "0987654321",
+                                    "image_url": "https://graph.facebook.com/0987654321/picture"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/pages');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/facebook/pages')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Instagram Posts",
+        "endpoints": [
+            {
+                "id": "instagram-publish-post-job",
+                "method": "POST",
+                "path": "/api/instagram/publish-post-job",
+                "title": "Publish Instagram Post Job",
+                "isProtected": false,
+                "description": "Planifier un post Instagram",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Post programmé avec job Laravel"
+                    },
+                    {
+                        "name": "datePublish",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2025-04-18 15:30"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string",
+                        "datePublish": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "message": "Post Instagram planifié avec succès",
+                            "execution_time_utc": "2025-04-18 14:30:00",
+                            "timezone_used": "Africa/Casablanca"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/instagram/publish-post-job', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Post programmé avec job Laravel', datePublish: '2025-04-18 15:30' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/instagram/publish-post-job', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Post programmé avec job Laravel', 'datePublish': '2025-04-18 15:30'})"
+                }
+            },
+            {
+                "id": "instagram-publish-post",
+                "method": "POST",
+                "path": "/api/instagram/publish-post",
+                "title": "Publish Instagram Post",
+                "isProtected": false,
+                "description": "Publier un post immédiatement sur Instagram",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Mon super post Instagram"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "results": [
+                                {
+                                    "page_id": "string",
+                                    "success": true,
+                                    "post_id": "string",
+                                    "message": "string",
+                                    "error": {}
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/instagram/publish-post', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Mon super post Instagram' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/instagram/publish-post', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Mon super post Instagram'})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Content Generator",
+        "endpoints": [
+            {
+                "id": "content-generator",
+                "method": "POST",
+                "path": "/api/content-generator",
+                "title": "Generate Content",
+                "isProtected": true,
+                "description": "send message to the api",
+                "parameters": [
+                    {
+                        "name": "message",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Give me 3 titles in JSON format"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    },
+                    "body": {
+                        "message": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "response": {
+                                "titles": [
+                                    "Title 1",
+                                    "Title 2",
+                                    "Title 3"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/content-generator', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json',",
+                        "    'Authorization': 'Bearer token'",
+                        "  },",
+                        "  body: JSON.stringify({ message: 'Give me 3 titles in JSON format' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/content-generator', headers={'Authorization': 'Bearer token'}, json={'message': 'Give me 3 titles in JSON format'})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Media",
+        "endpoints": [
+            {
+                "id": "save-image",
+                "method": "POST",
+                "path": "/api/save-image",
+                "title": "Save Image",
+                "isProtected": true,
+                "description": "Sauvegarder une image",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "type": "file",
+                        "inputType": "file",
+                        "example": "image.jpg"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "multipart/form-data",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "file_link": "https://test27382.devaito.com/public/storage/2025/Feb/884ofG3ZMMd1A3Vbj7GispFkO0Pz0tnlsg7iU8H9.jpg"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const formData = new FormData();",
+                        "formData.append('file', fileInput.files[0]);",
+                        "const response = await fetch('https://[shop-name].devaito.com/api/save-image', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  },",
+                        "  body: formData",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nfiles = {'file': open('image.jpg', 'rb')}\nresponse = requests.post('https://[shop-name].devaito.com/api/save-image', headers={'Authorization': 'Bearer token'}, files=files)"
+                }
+            },
+            {
+                "id": "save-video",
+                "method": "POST",
+                "path": "/api/save-video",
+                "title": "Save Video",
+                "isProtected": true,
+                "description": "Sauvegarder une vidéo",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "type": "file",
+                        "inputType": "file",
+                        "example": "video.mp4"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "multipart/form-data",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "file_link": "https://test27382.devaito.com/public/storage/2025/Feb/vid123456.mp4"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const formData = new FormData();",
+                        "formData.append('file', fileInput.files[0]);",
+                        "const response = await fetch('https://[shop-name].devaito.com/api/save-video', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  },",
+                        "  body: formData",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nfiles = {'file': open('video.mp4', 'rb')}\nresponse = requests.post('https://[shop-name].devaito.com/api/save-video', headers={'Authorization': 'Bearer token'}, files=files)"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Gallery",
+        "endpoints": [
+            {
+                "id": "gallery-store",
+                "method": "GET",
+                "path": "/api/gallery-store",
+                "title": "Get Gallery Store",
+                "isProtected": true,
+                "description": "Retourner tous les images et vidéos (URL)",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "all_urls": [
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150",
+                                "https://images.pexels.com/photos/726233/pexels-photo-726233.jpeg?width=150&height=113",
+                                "https://videos.pexels.com/video-files/3611035/3611035-hd_1920_1080_24fps.mp4?t=1727888820655",
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150",
+                                "https://images.pexels.com/photos/726233/pexels-photo-726233.jpeg?width=150&height=113",
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150"
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/gallery-store', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/gallery-store', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "image-gallery",
+                "method": "GET",
+                "path": "/api/image-gallery",
+                "title": "Get Image Gallery",
+                "isProtected": false,
+                "description": "Récupérer la galerie d'images",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "images": [
+                                {
+                                    "id": 1,
+                                    "name": "image1.jpg",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/image1.jpg",
+                                    "created_at": "2025-02-27T12:00:00Z"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "image2.png",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/image2.png",
+                                    "created_at": "2025-02-27T12:05:00Z"
+                                }
+                            ],
+                            "total": 50,
+                            "current_page": 1,
+                            "last_page": 3
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/image-gallery?page=1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/image-gallery', params={'page': 1})"
+                }
+            },
+            {
+                "id": "video-gallery",
+                "method": "GET",
+                "path": "/api/video-gallery",
+                "title": "Get Video Gallery",
+                "isProtected": false,
+                "description": "Récupérer la galerie de vidéos",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "videos": [
+                                {
+                                    "id": 1,
+                                    "name": "video1.mp4",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/video1.mp4",
+                                    "created_at": "2025-02-27T12:10:00Z"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "video2.avi",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/video2.avi",
+                                    "created_at": "2025-02-27T12:15:00Z"
+                                }
+                            ],
+                            "total": 30,
+                            "current_page": 1,
+                            "last_page": 2
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/video-gallery?page=1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/video-gallery', params={'page': 1})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Store Settings",
+        "endpoints": [
+            {
+                "id": "get-store-prompt",
+                "method": "GET",
+                "path": "/api/get-store-prompt",
+                "title": "Get Store Prompt",
+                "isProtected": true,
+                "description": "Récupérer le prompt du store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "prompt": "Example: A cozy cat café in LA called Meow. , products_services : Events and workshop"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-store-prompt', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-store-prompt', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "get-store-language",
+                "method": "GET",
+                "path": "/api/get-store-language",
+                "title": "Get Store Language",
+                "isProtected": true,
+                "description": "Récupérer la langue du store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "language": "Anglais"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-store-language', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-store-language', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "fonts-and-colors",
+                "method": "GET",
+                "path": "/api/fonts-and-colors",
+                "title": "Get Fonts and Colors",
+                "isProtected": true,
+                "description": "Récupérer les polices et couleurs",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "data": {
+                                "h1": {
+                                    "font": "Arial",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h2": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h3": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h4": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "paragraph": {
+                                    "font": "Nunito",
+                                    "light_color": "#383838",
+                                    "dark_color": "#FFC700"
+                                },
+                                "button": {
+                                    "light_color": "#383838",
+                                    "dark_color": "#FFD730",
+                                    "light_bg": "#FFD730",
+                                    "dark_bg": "#F4F4F3"
+                                },
+                                "body": {
+                                    "light_bg": "#F4F4F3",
+                                    "dark_bg": "#FFD730"
+                                }
+                            }
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fonts-and-colors', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fonts-and-colors', headers={'Authorization': 'Bearer token'})"
                 }
             }
         ]

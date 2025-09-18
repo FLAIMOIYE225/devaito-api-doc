@@ -1,5 +1,5 @@
 {
     "baseShopUrl": "https://{shopname}.devaito.com",
     "baseAdminUrl": "https://admin.devaito.com",
-    "version": "2.1.0"
+    "version": "1.0.0"
 }
