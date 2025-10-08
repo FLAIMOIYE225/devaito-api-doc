@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import apiConfig from '../data/api.config.json'
+import { DropDownMenu } from './DropDownMenu';
 // import { useState } from 'react' 
 
 export default function Sidebar({setCurrentSection, sections}){
 
     /* States */
     const [search, setSearch] = useState('');
-
+    const [currentEndpoint, setCurrentEndpoint] = useState('');
+    const [activeSection, setActiveSection] = useState(false);
 
 
     /* Constantes */
-    let isCurrentSectionMatched = false
+    let isCurrentSectionMatched = false;
 
 
     /* Functions & Handlers */
@@ -20,14 +22,15 @@ export default function Sidebar({setCurrentSection, sections}){
 
     // Filtre les sections selon le search : affiche la section si son nom ou au moins un endpoint correspond
     const sectionFilter = (section) => {
-        isCurrentSectionMatched = false
+        isCurrentSectionMatched = false;
+
         if (!search) return true;
 
         const searchLower = search.toLowerCase();
 
         // Vérifie si le nom de la section correspond
         if (section.name.toLowerCase().includes(searchLower)){ 
-            isCurrentSectionMatched = true
+            isCurrentSectionMatched = true;
             return true
         };
 
@@ -69,22 +72,7 @@ export default function Sidebar({setCurrentSection, sections}){
                 .map( (section) => {
 
                     return (
-                        <div className="nav-section" key={section.name} onClick={() => setCurrentSection(section)}>
-
-                            <div className="nav-section-title">{section.name}</div>
-                            
-                            {section.endpoints.filter(endpointFilter).map( (endpoint, index) => {
-
-                                return (
-                                    <div className="nav-item" data-section="auth" key={index} onClick={() => setCurrentSection(section.endpoints)}>
-                                        <div className={`nav-item-icon method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</div>
-                                        <span>{endpoint.title}</span>
-                                    </div>
-                                )
-
-                            })}
-
-                        </div>
+                        <DropDownMenu key={section.name} setCurrentSection={setCurrentSection} section={section} currentEndpoint={currentEndpoint} setCurrentEndpoint={setCurrentEndpoint} activeSection={activeSection} setActiveSection={setActiveSection} endpointFilter={endpointFilter}/>
                     )
 
                 })}

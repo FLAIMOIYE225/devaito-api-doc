@@ -100,6 +100,7 @@
     },
     {
         "name": "Users",
+        "description": "The following endpoints in this section concern the store owner.",
         "endpoints": [
             {
                 "id": "user-get",
@@ -235,6 +236,7 @@
     },
     {
         "name": "Products",
+        "description": "The following endpoints in this section are related to the user's products.",
         "endpoints": [
             {
                 "id": "products-list",
@@ -242,7 +244,7 @@
                 "path": "/api/fetch-all-products",
                 "title": "List Products",
                 "isProtected": true,
-                "description": "Retrieve a paginated list of all products in the user's store",
+                "description": "Retrieve a paginated list of all products in a user's store",
                 "parameters": [],
                 "request": {
                     "headers": {
@@ -395,6 +397,7 @@
                 "title": "Get Product By Slug",
                 "isProtected": false,
                 "description": "Get product details from its slug",
+                "details": "This endpoint allows you to retrieve a specific product based on its slug. The slug is a unique identifier formed from the product name. To form the slug, simply lowercase the product name, remove all special characters, and replace spaces with hyphens (-). However, you will find the slug in the response when you retrieve the list of all products.",
                 "parameters": [
                     {
                         "name": "slug",
@@ -444,6 +447,7 @@
     },
     {
         "name": "Categories",
+        "description":"",
         "endpoints": [
             {
                 "id": "categories-list",
@@ -2456,67 +2460,6 @@
                         "const data = await response.json();"
                     ],
                     "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/instagram/publish-post', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Mon super post Instagram'})"
-                }
-            }
-        ]
-    },
-    {
-        "name": "Content Generator",
-        "endpoints": [
-            {
-                "id": "content-generator",
-                "method": "POST",
-                "path": "/api/content-generator",
-                "title": "Generate Content",
-                "isProtected": true,
-                "description": "send message to the api",
-                "parameters": [
-                    {
-                        "name": "message",
-                        "in": "body",
-                        "type": "string",
-                        "inputType": "text",
-                        "example": "Give me 3 titles in JSON format"
-                    }
-                ],
-                "request": {
-                    "headers": {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "Authorization": "Bearer token"
-                    },
-                    "body": {
-                        "message": "string"
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "example": {
-                            "success": true,
-                            "response": {
-                                "titles": [
-                                    "Title 1",
-                                    "Title 2",
-                                    "Title 3"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "codeSamples": {
-                    "javascript": [
-                        "const response = await fetch('https://[shop-name].devaito.com/api/content-generator', {",
-                        "  method: 'POST',",
-                        "  headers: {",
-                        "    'Content-Type': 'application/json',",
-                        "    'Authorization': 'Bearer token'",
-                        "  },",
-                        "  body: JSON.stringify({ message: 'Give me 3 titles in JSON format' })",
-                        "});",
-                        "const data = await response.json();"
-                    ],
-                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/content-generator', headers={'Authorization': 'Bearer token'}, json={'message': 'Give me 3 titles in JSON format'})"
                 }
             }
         ]

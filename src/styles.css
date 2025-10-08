@@ -22,6 +22,9 @@
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
+
+    /* TESTS */
+    --Fill-Default: #00936f;
 }
 
 [data-theme="dark"] {
@@ -182,6 +185,9 @@ body {
 .nav-section {
     margin-bottom: 1.5rem;
 }
+.nav-section {
+    margin: 0;
+}
 
 .nav-section-title {
     padding: 0.75rem 1.5rem 0.5rem;
@@ -194,20 +200,49 @@ body {
     top: 0;
     background: var(--bg-secondary);
     z-index: 5;
+
+    /* TESTS */
+    display: flex; align-items: center; /* Par defaut flex-direction est à "row" est  */
+    cursor: pointer;
+    outline: none;
+    border: none;
+    width: 95%;
+    margin: 0 10px;
+    border-radius: 8px;
+    padding-left: 10px;
+    transition: all 0.4s;
+}
+.nav-section-title:hover {
+    /* background: var(--bg-tertiary); */
+    background-color: rgba(128, 128, 128, 0.075);
+    color: rgba(0, 0, 0, 0.767);
+    /* transform: translateX(2px); */
+}
+.nav-section-title:focus{
+    outline: none;
+    border: none;
+}
+.nav-section-title .expandIcon{
+    margin-right: 10px;
 }
 
 .nav-item {
     margin: 0.125rem 0.75rem;
-    padding: 0.75rem 1rem;
+    /* padding: 0.75rem 1rem; */
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: var(--radius-md);
+    /* border-radius: var(--radius-md); */
     display: flex;
     align-items: center;
     gap: 0.75rem;
     font-size: 0.875rem;
     font-weight: 500;
     position: relative;
+
+    /* TESTS */
+    padding: 0.5rem 1rem;
+    padding-left: 2rem;
+    border-radius: 4px var(--radius-md) var(--radius-md) 4px;
 }
 
 .nav-item:hover {
@@ -815,6 +850,7 @@ body {
     color: var(--text-secondary);
     font-size: 1.125rem;
     line-height: 1.7;
+    font-size: 1rem;
 }
 
 .text-header{
@@ -824,4 +860,15 @@ body {
     font-size: 14px;
     font-weight: 600;
     border-radius: 8px 8px 0 0;
+}
+
+/* Priorité supérieur sur les autre classe, par ordre de déclaration */
+.nav-section .active-endpoint {
+    background: var(--bg-tertiary);
+    transform: translateX(2px);
+    border-left: 5px solid var(--Fill-Default);
+}
+
+.nav-section .section-active {
+    color: black;
 }
