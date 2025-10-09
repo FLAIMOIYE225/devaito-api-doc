@@ -12,17 +12,17 @@ export default function Sidebar({setCurrentSection, sections}){
 
 
     /* Constantes */
-    let isCurrentSectionMatched = false;
+    // let isCurrentSectionMatched = false;
 
 
-    /* Functions & Handlers */
+    /* Functions diverses & Handlers */
     const handleSearch = (event) => {
         setSearch(event.target.value);
     }
 
     // Filtre les sections selon le search : affiche la section si son nom ou au moins un endpoint correspond
     const sectionFilter = (section) => {
-        isCurrentSectionMatched = false;
+        // isCurrentSectionMatched = false;
 
         if (!search) return true;
 
@@ -30,7 +30,8 @@ export default function Sidebar({setCurrentSection, sections}){
 
         // Vérifie si le nom de la section correspond
         if (section.name.toLowerCase().includes(searchLower)){ 
-            isCurrentSectionMatched = true;
+            // isCurrentSectionMatched = true;
+            // if (section.name === 'Authentification') console.log(isCurrentSectionMatched);
             return true
         };
 
@@ -40,10 +41,11 @@ export default function Sidebar({setCurrentSection, sections}){
         );
     };
 
-    const endpointFilter = (endpoint) => {
-        if (isCurrentSectionMatched) return true
-        return endpoint.title.toLowerCase().includes(search.toLowerCase())
-    }
+    // const endpointFilter = (endpoint) => {
+    //     if (endpoint.id === 'auth-login' || endpoint.id === 'auth-logout') console.log('auth:', isCurrentSectionMatched);
+    //     if (isCurrentSectionMatched) return true
+    //     return endpoint.title.toLowerCase().includes(search.toLowerCase());
+    // }
 
 
 
@@ -72,7 +74,7 @@ export default function Sidebar({setCurrentSection, sections}){
                 .map( (section) => {
 
                     return (
-                        <DropDownMenu key={section.name} setCurrentSection={setCurrentSection} section={section} currentEndpoint={currentEndpoint} setCurrentEndpoint={setCurrentEndpoint} activeSection={activeSection} setActiveSection={setActiveSection} endpointFilter={endpointFilter}/>
+                        <DropDownMenu key={section.name} setCurrentSection={setCurrentSection} section={section} currentEndpoint={currentEndpoint} setCurrentEndpoint={setCurrentEndpoint} activeSection={activeSection} setActiveSection={setActiveSection} search={search}/>
                     )
 
                 })}

@@ -4,7 +4,7 @@ import { useState } from "react";
 
 
 // Component
-export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCurrentEndpoint, activeSection, setActiveSection, endpointFilter}) => {
+export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCurrentEndpoint, activeSection, setActiveSection, search}) => {
 
     /* State */
     const [extend, setExtend] = useState(false);
@@ -12,6 +12,12 @@ export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCu
     /* Constants */
 
     /* Fonctions */
+    const endpointFilter = (endpoint) => {
+        const searchLower = search.toLowerCase();
+
+        if (section.name.toLowerCase().includes(searchLower)) return true;
+        return endpoint.title.toLowerCase().includes(searchLower);
+    }
 
     /* Effects & Memos  */
 
@@ -57,13 +63,13 @@ export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCu
                             // setCurrentSection(section.endpoints);
                             setActiveSection(section.name);
                             setCurrentSection(section);
+                            setCurrentEndpoint(endpoint.id);
                             setTimeout(() => {
                                 const mainContentSection = document.getElementById(`${endpoint.id}-section`);
                                 if (mainContentSection) {
                                     mainContentSection.scrollIntoView({ behavior: 'smooth' });
                                 }
                             }, 0);
-                            setCurrentEndpoint(endpoint.id);
                             // const mainContentSection = document.getElementById(`${endpoint.id}-section`);
                             // if (mainContentSection) {
                             //     mainContentSection.scrollIntoView({ behavior: 'smooth' });

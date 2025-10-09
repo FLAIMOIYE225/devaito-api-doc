@@ -66,7 +66,6 @@
                 "title": "Logout",
                 "isProtected": true,
                 "description": "Disconnects the user from the current session and revoke access token.",
-                "details": "This endpoint returns an access token. This token must be provided in the request header (Bearer token), which allows the request to be authenticated and access to the user's data.",
                 "parameters": [],
                 "request": {
                     "headers": {
