@@ -1,0 +1,2926 @@
+[
+    {
+        "name": "Authentification",
+        "description": "The following endpoints in this section are commonly used to get and revoke user's access token.",
+        "endpoints": [
+            {
+                "id": "auth-login",
+                "method": "POST",
+                "path": "/api/login",
+                "title": "Login",
+                "isProtected": false,
+                "description": "Login a user and retrieve their access token.",
+                "details": "This endpoint returns an access token. This token must be provided in the request header (Bearer token), enabling authentication and access to the user's data.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "email",
+                        "example": "user@example.com"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "password",
+                        "example": "password123"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "email": "string",
+                        "password": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "token": "11|nv4dxvDlX2rkrrc9veXq7lDVuIBe19OMAy0dnNSg"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/login', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ email: 'user@example.com', password: 'password123' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/login', json={'email': 'user@example.com', 'password': 'password123'})"
+                }
+            },
+            {
+                "id": "auth-logout",
+                "method": "POST",
+                "path": "/api/logout",
+                "title": "Logout",
+                "isProtected": true,
+                "description": "Disconnects the user from the current session and revoke access token.",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "status": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/logout', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/logout', headers={'Authorization': 'Bearer token'})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Users",
+        "description": "The following endpoints in this section concern the store owner.",
+        "endpoints": [
+            {
+                "id": "user-get",
+                "method": "GET",
+                "path": "/api/user",
+                "title": "Get User",
+                "isProtected": true,
+                "description": "Get info about the user and the type of his store",
+                "details": "This endpoint returns information related to a specific user and his store. You must provide the access token specific to that user in the request header.",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "user": {
+                                "id": 4,
+                                "name": "KOFFI DEV",
+                                "email": "flaimoiyekoffitest@gmail.com",
+                                "image": null,
+                                "status": 1,
+                                "user_type": 1,
+                                "calendly_access_token": null,
+                                "calendly_refresh_token": null,
+                                "calendly_token_expires_at": null,
+                                "calendly_user_uri": null,
+                                "calendly_user_data": null,
+                                "adress": null,
+                                "phone": null,
+                                "created_at": "2025-09-10 08:44:49",
+                                "updated_at": "2025-09-10 08:44:49",
+                                "role_name": "Manager",
+                                "type_website": "ecommerce",
+                                "domain_store": "https://techshop.devaito.com",
+                                "super_admin_id": 6327
+                            },
+                            "avatar": null,
+                            "logo_store": {
+                                "system_name": "DevAito",
+                                "admin_logo": "https://techshop.devaito.com/public/storage/2024/Sep/mznyorchKilL1Ti812Q5A7REsDcZ3GW7C2H2ZYFG.png",
+                                "admin_logo_alt": null,
+                                "admin_dark": "https://techshop.devaito.com/public/storage/2024/Sep/mznyorchKilL1Ti812Q5A7REsDcZ3GW7C2H2ZYFG.png",
+                                "admin_dark_alt": null,
+                                "favicon_logo": "https://techshop.devaito.com/public/storage/2024/Sep/0MboC61TCfNWDSWaSgvklQ6sNpyAHqCHpHKrvU62.png",
+                                "favicon_alt": null
+                            }
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/user', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/user', headers={'Authorization': 'Bearer token'})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Orders",
+        "endpoints": [
+            {
+                "id": "orders-list",
+                "method": "GET",
+                "path": "/api/get-all-orders",
+                "title": "List Orders",
+                "isProtected": false,
+                "description": "Retrieve a paginated list of all orders in the user's store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": {
+                                "current_page": 1,
+                                "data": [
+                                    {
+                                        "id": 2,
+                                        "total_payable_amount": "200",
+                                        "order_code": "iv-113034250806",
+                                        "created_at": "2025-08-06 11:30:34",
+                                        "read_at": null,
+                                        "delivery_status": "2",
+                                        "payment_status": "2",
+                                        "customer_name": "test",
+                                        "guest_customer": null,
+                                        "customer_id": "2",
+                                        "guest_customer_id": null,
+                                        "total_product": "1"
+                                    }
+                                ],
+                                "first_page_url": "https://test44323.devaito.com/api/get-all-orders?page=1",
+                                "from": 1,
+                                "last_page": 1,
+                                "last_page_url": "https://test44323.devaito.com/api/get-all-orders?page=1",
+                                "links": [
+                                    null
+                                ],
+                                "next_page_url": null,
+                                "path": "https://test44323.devaito.com/api/get-all-orders",
+                                "per_page": 10,
+                                "prev_page_url": null,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-all-orders');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-all-orders')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Products",
+        "description": "The following endpoints in this section are related to the user's products.",
+        "endpoints": [
+            {
+                "id": "products-list",
+                "method": "GET",
+                "path": "/api/fetch-all-products",
+                "title": "List Products",
+                "isProtected": true,
+                "description": "Retrieve a paginated list of all products in a user's store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "products": [
+                                {
+                                    "id": 2,
+                                    "name": "Smartphone X100",
+                                    "slug": "productssmartphone-x100",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "699.99",
+                                    "devise": "$",
+                                    "url": "https://techshop.devaito.com/product/productssmartphone-x100",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 1,
+                                            "name": "Laptops"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "4K Ultra HD Smart TV",
+                                    "slug": "products4k-ultra-hd-smart-tv",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "1299.99",
+                                    "devise": "$",
+                                    "url": "https://techshop.devaito.com/product/products4k-ultra-hd-smart-tv",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 2,
+                                            "name": "Smartphones"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 4,
+                                    "name": "Wireless Noise-Canceling Headphones",
+                                    "slug": "productswireless-noise-canceling-headphones",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "249.99",
+                                    "devise": "$",
+                                    "url": "https://techshop.devaito.com/product/productswireless-noise-canceling-headphones",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 3,
+                                            "name": "Tablets"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 5,
+                                    "name": "Gaming Laptop Pro",
+                                    "slug": "productsgaming-laptop-pro",
+                                    "image": "https://techshop.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                                    "price": "1599.99",
+                                    "devise": "$",
+                                    "url": "https://techshop.devaito.com/product/productsgaming-laptop-pro",
+                                    "discount_type": 2,
+                                    "discount_amount": null,
+                                    "brand_name": null,
+                                    "brand_logo": null,
+                                    "categories": [
+                                        {
+                                            "id": 4,
+                                            "name": "Wearable Technology"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "current_page": 1,
+                            "last_page": 1
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-all-products', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-all-products', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "popular-products",
+                "method": "GET",
+                "path": "/api/popular-products",
+                "title": "List Popular Products",
+                "isProtected": true,
+                "description": "Get a list of the most popular products in a user's store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": [
+                                {
+                                    "id": 2,
+                                    "name": "Location de voiture de luxe",
+                                    "permalink": "location-voiture-luxe",
+                                    "thumbnail_image": "17",
+                                    "orders_count": 1,
+                                    "orders_sum_unit_price": 200,
+                                    "orders_sum_quantity": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/popular-products');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/popular-products')"
+                }
+            },
+            {
+                "id": "products-by-slug",
+                "method": "GET",
+                "path": "/api/get-product/{slug}",
+                "title": "Get Product By Slug",
+                "isProtected": false,
+                "description": "Get product details from its slug",
+                "details": "This endpoint allows you to retrieve a specific product based on its slug. The slug is a unique identifier formed from the product name. To form the slug, simply lowercase the product name, remove all special characters, and replace spaces with hyphens (-). However, you will find the slug in the response when you retrieve the list of all products.",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "location-voiture-luxe"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 2,
+                            "name": "Location de voiture de luxe",
+                            "description": "<p><strong>Elevate your daily routine</strong> Whether you need something to simplify your day-to-day activities or add a touch of sophistication...</p>",
+                            "image": "https://test44323.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg",
+                            "price": "200.00",
+                            "devise": "$",
+                            "url": "https://test44323.devaito.com/product/location-voiture-luxe",
+                            "discount_type": 2,
+                            "discount_amount": null,
+                            "brand_name": null,
+                            "brand_logo": null,
+                            "categories": [
+                                {
+                                    "id": 1,
+                                    "name": "Voitures Neuves"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-product/location-voiture-luxe');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-product/location-voiture-luxe')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Templates Categories",
+        "description":"Categories organize the publication templates used when creating posts for social networks (Facebook, Instagram, etc.). Each template is attached to a category to help merchants quickly find a visual adapted to a specific type of content, such as a promotion, product launch or seasonal event. The endpoints in this section are used to create and manage categories associated with templates. These routes are mainly used by marketing content creation interfaces or by any publishing automation system. \n\n You can obtain a list of all the platforms managed by DEVAITO by contacting the endpoint '/api/platform'.",
+        "endpoints": [
+            {
+                "id": "categories-list",
+                "method": "GET",
+                "path": "/api/categories",
+                "title": "List Categories",
+                "details": "Retrieves the complete list of available categories. This request is generally used to feed a selector when creating a post, or to display a catalog of filterable templates. The response contains only basic information on the categories (name, identifier), with no associated content.",
+                "isProtected": false,
+                "description": "List all categories",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": []
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/categories')"
+                }
+            },
+            {
+                "id": "post-category",
+                "method": "POST",
+                "path": "/api/categories",
+                "title": "Create Category",
+                "details": "Creates a new category from a supplied name. This entry point is intended for administrators or merchants with an advanced management space enabling them to organize their own template groups. If successful, the category is added and can be used immediately to associate new templates.",
+                "isProtected": false,
+                "description": "Add a new category",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Catégorie 1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Catégorie ajoutée",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Catégorie 1' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/categories', json={'name': 'Catégorie 1'})"
+                }
+            },
+            {
+                "id": "category-by-id",
+                "method": "GET",
+                "path": "/api/categories/{id}",
+                "title": "Get Category",
+                "details": "Returns detailed information on a specific category. This type of request is useful for checking the existence of a category before associating a template with it, or for displaying its properties in a modification interface.",
+                "isProtected": false,
+                "description": "Get category by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/categories/1')"
+                }
+            },
+            {
+                "id": "update-category",
+                "method": "PUT",
+                "path": "/api/categories/{id}",
+                "title": "Update Category",
+                "details":"Allows you to update an existing category. This operation is commonly used in admin panels to correct a misnomer or rename a category to make it more relevant (e.g. \"Summer Promo\" → \"Seasonal Offers\").",
+                "isProtected": false,
+                "description": "Modify a category",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Nouveau nom de catégorie"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Nouveau nom de catégorie' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/categories/1', json={'name': 'Nouveau nom de catégorie'})"
+                }
+            },
+            {
+                "id": "delete-category",
+                "method": "DELETE",
+                "path": "/api/categories/{id}",
+                "title": "Delete Category",
+                "details":"Deletes a category identified by its ID. Before calling this route, it is generally advisable to ensure that no template or active post is yet associated with this category, to avoid visual or functional inconsistencies in client interfaces.",
+                "isProtected": false,
+                "description": "Delete a category",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/categories/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/categories/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name":"Products Categories",
+        "description":"The Categories section groups together all the endpoints used to manage product classification within a store. Categories are used to structure the catalog to facilitate end-user navigation and the internal organization of merchandise. They can be used both in the merchant interface (back-office) for inventory management and in the front-end (showcase site) to enable customers to filter products by type.",
+        "endpoints":[
+            {
+                "id": "fetch-categories",
+                "method": "GET",
+                "path": "/api/fetch-categories",
+                "title": "Fetch Categories",
+                "details":"This endpoint returns the complete list of categories available in the store. It is generally used in administration interfaces to display the tree structure of existing categories, but can also be used to initialize dynamic menus or filters in a product catalog. No authentication is required, so it can be used in either a public or private context, depending on the customer's needs.",
+                "isProtected": false,
+                "description": "Get all product categories",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "entities": [
+                                {
+                                    "id": 1,
+                                    "name": "Men\\s Clothing",
+                                    "url": "category-1",
+                                    "slug": "category-1",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "Women\\s Clothing",
+                                    "url": "category-2",
+                                    "slug": "category-2",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "Children\\s Apparel",
+                                    "url": "category-3",
+                                    "slug": "category-3",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 4,
+                                    "name": "Footwear",
+                                    "url": "category-4",
+                                    "slug": "category-4",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 5,
+                                    "name": "Accessories",
+                                    "url": "category-5",
+                                    "slug": "category-5",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 6,
+                                    "name": "Activewear",
+                                    "url": "category-6",
+                                    "slug": "category-6",
+                                    "image": "https://admin.devaito.com/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 7,
+                                    "name": "Seasonal Collections",
+                                    "url": "category-7",
+                                    "slug": "category-7",
+                                    "image": "/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                },
+                                {
+                                    "id": 8,
+                                    "name": "Sustainable Fashion",
+                                    "url": "category-8",
+                                    "slug": "category-8",
+                                    "image": "/public/storage/all_files/2023/Mar/img-demo_17.jpg"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-categories');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-categories')"
+                }
+            },
+            {
+                "id": "products-by-category",
+                "method": "GET",
+                "path": "/api/fetch-categories-product/{permalink}",
+                "title": "Get Products By Category",
+                "details":"Retrieves the list of products associated with a given category via its public permalink. This endpoint is designed to be used on the client side, for example when browsing a category page. It provides immediate access to all visible products belonging to this category, without the need for authentication.",
+                "isProtected": false,
+                "description": "Get products by category permalink",
+                "parameters": [
+                    {
+                        "name": "permalink",
+                        "in": "path",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "category-1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": []
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fetch-categories-product/category-1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fetch-categories-product/category-1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Platforms",
+        "description":"",
+        "endpoints": [
+            {
+                "id": "platforms-list",
+                "method": "GET",
+                "path": "/api/platforms",
+                "title": "List Platforms",
+                "details":"Function: returns a list of all the social platforms managed by DEVAITO. This endpoint is used to retrieve the platforms currently supported by the system. Each item returned contains information such as the name, the associated icon and the creation and update dates. It is mainly used to display the platforms available in the dashboard or to check which integrations are active on the server side.",
+                "isProtected": false,
+                "description": "List of platforms",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "name": "Platform 1",
+                                "icon": "icon.png",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platforms')"
+                }
+            },
+            {
+                "id": "post-platform",
+                "method": "POST",
+                "path": "/api/platforms",
+                "title": "Create Platform",
+                "details":"Function: adds a new social platform to the DEVAITO system. This endpoint is used to create a new entry representing an external platform (for example, a new social API). Developers can specify the name and icon of the platform. It is particularly useful for extending the number of media supported by the system, as part of a product upgrade or custom integration.",
+                "isProtected": false,
+                "description": "Create a new platform",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Platform 2"
+                    },
+                    {
+                        "name": "icon",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "icon2.png"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "icon": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plateforme créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "name": "Platform 2",
+                            "icon": "icon2.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Platform 2', icon: 'icon2.png' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/platforms', json={'name': 'Platform 2', 'icon': 'icon2.png'})"
+                }
+            },
+            {
+                "id": "platform-by-id",
+                "method": "GET",
+                "path": "/api/platforms/{id}",
+                "title": "Get Platform",
+                "details":"Function : retrieves detailed information about a specific platform. This endpoint returns the details of a platform identified by its ID. It is commonly used to consult the properties of a platform before an update or to display its information in an administration interface.",
+                "isProtected": false,
+                "description": "Details of a platform",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Platform 1",
+                            "icon": "icon.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platforms/1')"
+                }
+            },
+            {
+                "id": "update-platform",
+                "method": "PUT",
+                "path": "/api/platforms/{id}",
+                "title": "Update Platform",
+                "details":"Function: updates information about an existing platform. This endpoint can be used to modify the attributes of a given platform, such as its name or icon. It is an essential administration tool for maintaining the visual and functional consistency of the platforms available in DEVAITO.",
+                "isProtected": false,
+                "description": "Updating a platform",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Updated Platform"
+                    },
+                    {
+                        "name": "icon",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_icon.png"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "icon": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Updated Platform",
+                            "icon": "updated_icon.png",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Updated Platform', icon: 'updated_icon.png' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/platforms/1', json={'name': 'Updated Platform', 'icon': 'updated_icon.png'})"
+                }
+            },
+            {
+                "id": "delete-platform",
+                "method": "DELETE",
+                "path": "/api/platforms/{id}",
+                "title": "Delete Platform",
+                "details":"Function: removes a specific platform from the system. This endpoint is used to remove a platform that is no longer supported or has been replaced. Removal ensures that the database is clean and prevents users from trying to connect obsolete services.",
+                "isProtected": false,
+                "description": "Delete a platform",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platforms/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/platforms/1')"
+                }
+            },
+            {
+                "id": "platform-connections",
+                "method": "GET",
+                "path": "/api/platform-connections",
+                "title": "List Connected Accounts",
+                "details":"Function: lists the user accounts currently connected to the various social platforms. This endpoint can be used to retrieve active connections between the user's DEVAITO account and third-party platforms (e.g. Facebook, Instagram). Each connected account contains information such as the user's name, the platform concerned and the expiry date of the access token. This data is essential for monitoring the status of social integrations and preventing sessions from expiring. It is also used to display, in the DEVAITO interface, the list of accounts currently linked for the automatic publication of content.",
+                "isProtected": false,
+                "description": "List the user's connected accounts",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "accounts": [
+                                {
+                                    "platform": "facebook",
+                                    "name": "John Doe",
+                                    "expires_at": "2025-08-22 08:13:42"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/platform-connections');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/platform-connections')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Template (Resolutions)",
+        "description":"Les résolutions représentent la configuration dimensionnelle des templates utilisés pour générer les visuels des publications dans DEVAITO. Chaque résolution définit la largeur (width) et la hauteur (height) d’un modèle, garantissant une adaptation optimale du rendu selon la plateforme de destination (par exemple, un format carré pour Instagram ou horizontal pour Facebook). Ces paramètres constituent la base de la compatibilité graphique multi-plateformes et permettent d’assurer une qualité d’affichage cohérente, quel que soit le support de publication. Les endpoints suivants permettent de lister, créer, consulter, modifier et supprimer les résolutions disponibles. Ils facilitent également la configuration des nouveaux formats lors de l’ajout de templates personnalisés.",
+        "endpoints": [
+            {
+                "id": "resolutions-list",
+                "method": "GET",
+                "path": "/api/resolutions",
+                "title": "List Resolutions",
+                "details":"Function: returns a complete list of resolutions registered in the system. This endpoint displays all available resolutions, generally associated with a given platform. Each item returned includes the name, width, height and ID of the linked platform. It is often used when loading or creating templates, to select the appropriate resolution for correct rendering.",
+                "isProtected": false,
+                "description": "List of resolutions",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "name": "Resolution 1",
+                                "width": 1920,
+                                "height": 1080,
+                                "platform_id": 1,
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/resolutions')"
+                }
+            },
+            {
+                "id": "post-resolution",
+                "method": "POST",
+                "path": "/api/resolutions",
+                "title": "Create Resolution",
+                "details":"Function: creates a new resolution in the system. This endpoint is used to define a new visual format adapted to a particular platform or need. Parameters include the name, width, height and ID of the platform concerned. This is an essential tool for extending the library of configurations available when developing new templates or integrating new social platforms.",
+                "isProtected": false,
+                "description": "Create a new resolution",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Resolution 2"
+                    },
+                    {
+                        "name": "width",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 2560
+                    },
+                    {
+                        "name": "height",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1440
+                    },
+                    {
+                        "name": "platform_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "width": "integer",
+                        "height": "integer",
+                        "platform_id": "integer"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Résolution créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "name": "Resolution 2",
+                            "width": 2560,
+                            "height": 1440,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Resolution 2', width: 2560, height: 1440, platform_id: 1 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/resolutions', json={'name': 'Resolution 2', 'width': 2560, 'height': 1440, 'platform_id': 1})"
+                }
+            },
+            {
+                "id": "resolution-by-id",
+                "method": "GET",
+                "path": "/api/resolutions/{id}",
+                "title": "Get Resolution",
+                "details":"Function : retrieves details of a specific resolution. This endpoint returns all the information for a resolution identified by its ID. It is generally used to display or check the exact dimensions of a format before applying a template or generating a visual.",
+                "isProtected": false,
+                "description": "Details of a resolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Resolution 1",
+                            "width": 1920,
+                            "height": 1080,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/resolutions/1')"
+                }
+            },
+            {
+                "id": "update-resolution",
+                "method": "PUT",
+                "path": "/api/resolutions/{id}",
+                "title": "Update Resolution",
+                "details":"Function: updates the characteristics of an existing resolution. This endpoint can be used to change the dimensions (width, height) or name of a given resolution. It offers the flexibility needed to adjust formats to changes in social platforms or new design requirements.",
+                "isProtected": false,
+                "description": "Updating a resolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Updated Resolution"
+                    },
+                    {
+                        "name": "width",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3840
+                    },
+                    {
+                        "name": "height",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 2160
+                    },
+                    {
+                        "name": "platform_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "width": "integer",
+                        "height": "integer",
+                        "platform_id": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "name": "Updated Resolution",
+                            "width": 3840,
+                            "height": 2160,
+                            "platform_id": 1,
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Updated Resolution', width: 3840, height: 2160, platform_id: 1 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/resolutions/1', json={'name': 'Updated Resolution', 'width': 3840, 'height': 2160, 'platform_id': 1})"
+                }
+            },
+            {
+                "id": "delete-resolution",
+                "method": "DELETE",
+                "path": "/api/resolutions/{id}",
+                "title": "Delete Resolution",
+                "details":"Function: removes a specific resolution from the system. This endpoint is used to remove a format that has become obsolete or redundant. Removing it ensures that the resolution library remains clear, consistent and adapted to the current needs of templates.",
+                "isProtected": false,
+                "description": "Delete a resolution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/resolutions/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/resolutions/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Posts",
+        "description": "Posts are publications created on the DEVAITO platform from customised templates. Each post contains an image generated from a template, a caption and can be associated with a user and a scheduled publication task (via a job_id). This section groups together the endpoints needed to manage the entire lifecycle of a publication: creation, consultation, modification, deletion and tracking. These endpoints enable developers to integrate, automate and manage the publication of content on different social platforms using DEVAITO.",
+        "isProtected": true,
+        "endpoints": [
+            {
+                "id": "posts-list",
+                "method": "GET",
+                "path": "/api/posts",
+                "title": "List Posts",
+                "details":"This endpoint returns a list of all existing publications. It is mainly used to display posts created by users or generated automatically from templates. Each item in the list contains essential information such as the image, the caption, the template used and the creation and update dates.",
+                "isProtected": true,
+                "description": "List of publications",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "user_id": 1,
+                                "image": "post_image.png",
+                                "template": "template1",
+                                "caption": "This is a post caption",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/posts')"
+                }
+            },
+            {
+                "id": "post-post",
+                "method": "POST",
+                "path": "/api/posts",
+                "title": "Create Post",
+                "details": "This endpoint is used to create a new publication from a template and an associated image. The developer must provide basic information such as the user ID, the name of the template used, the image generated and the caption text. This operation is at the heart of the visual content generation process on DEVAITO, as it is the stage at which a post becomes an entity ready to be published or scheduled.",
+                "isProtected": true,
+                "description": "Create a new publication",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "image",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "new_post_image.png"
+                    },
+                    {
+                        "name": "template",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "new_template"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "This is a new post"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "image": "string",
+                        "template": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Publication créée avec succès",
+                        "example": {
+                            "id": 2,
+                            "user_id": 1,
+                            "image": "new_post_image.png",
+                            "template": "new_template",
+                            "caption": "This is a new post",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, image: 'new_post_image.png', template: 'new_template', caption: 'This is a new post' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/posts', json={'user_id': 1, 'image': 'new_post_image.png', 'template': 'new_template', 'caption': 'This is a new post'})"
+                }
+            },
+            {
+                "id": "post-by-id",
+                "method": "GET",
+                "path": "/api/posts/{id}",
+                "title": "Get Post",
+                "details":"This endpoint returns the details of a specific post. It provides all the information relating to a given publication - including its image, caption, template and associated metadata. It is often used to display a post in the user interface or to check the content before publication.",
+                "isProtected": true,
+                "description": "Publication details",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "image": "post_image.png",
+                            "template": "template1",
+                            "caption": "This is a post caption",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/posts/1')"
+                }
+            },
+            {
+                "id": "update-post",
+                "method": "PUT",
+                "path": "/api/posts/{id}",
+                "title": "Update Post",
+                "details":"This endpoint updates the information in an existing publication. It allows you to modify the caption, image or template of a post. This is a useful feature for users who want to adjust or correct content before it is published on social networks.",
+                "isProtected": true,
+                "description": "Update a publication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "image",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_post_image.png"
+                    },
+                    {
+                        "name": "template",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "updated_template"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "This is an updated post"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "image": "string",
+                        "template": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "image": "updated_post_image.png",
+                            "template": "updated_template",
+                            "caption": "This is an updated post",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, image: 'updated_post_image.png', template: 'updated_template', caption: 'This is an updated post' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/posts/1', json={'user_id': 1, 'image': 'updated_post_image.png', 'template': 'updated_template', 'caption': 'This is an updated post'})"
+                }
+            },
+            {
+                "id": "delete-post",
+                "method": "DELETE",
+                "path": "/api/posts/{id}",
+                "title": "Delete Post",
+                "details":"This endpoint removes a publication from the system. It is used to remove a post which is no longer relevant, which has been published by mistake or which no longer corresponds to the user's communication needs. Once deleted, the post no longer appears in the list of available publications.",
+                "isProtected": true,
+                "description": "Deleting a publication",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/posts/1')"
+                }
+            },
+            {
+                "id": "update-post-job",
+                "method": "PUT",
+                "path": "/api/posts/{id}/{job_id}",
+                "title": "Update Post Job ID",
+                "details":"This endpoint updates the job_id field of a post. This field is used to establish a link between a publication and a scheduled job, i.e. an automatic task responsible for publishing the post on a social platform on a given date. This operation is essential for synchronisation between the scheduling system and publication management in DEVAITO.",
+                "isProtected": false,
+                "description": "Updates the job_id field of a post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "123"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "message": "Mise à jour réussie"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/posts/1/123', {",
+                        "  method: 'PUT'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/posts/1/123')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Campaigns",
+        "isProtected": true,
+        "description":"This section groups together the endpoints used to manage a shop's marketing campaigns. A campaign represents a communication action programmed by the merchant, such as a promotional email, a product launch announcement or a targeted notification to customers. These endpoints enable campaigns to be listed, created, consulted, updated or deleted. They offer developers the possibility of automating the distribution of promotional content or integrating these functions into third-party applications connected to the shop.",
+        "endpoints": [
+            {
+                "id": "campaigns-list",
+                "method": "GET",
+                "path": "/api/campaigns",
+                "title": "List Campaigns",
+                "details":"This endpoint can be used to retrieve a list of all the existing campaigns associated with a shop. It returns the main information for each campaign, such as the subject, publication date and associated metadata. It is generally used to display campaigns in the administration dashboard, perform filters, or synchronise campaigns with another application.",
+                "isProtected": true,
+                "description": "Retrieve all campaigns",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": [
+                            {
+                                "id": 1,
+                                "user_id": 1,
+                                "topic": "Nouveau sujet de campagne",
+                                "publish_at": "2023-04-01T12:00:00Z",
+                                "created_at": "2023-04-01T12:00:00Z",
+                                "updated_at": "2023-04-01T12:00:00Z"
+                            }
+                        ]
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/campaigns')"
+                }
+            },
+            {
+                "id": "post-campaign",
+                "method": "POST",
+                "path": "/api/campaigns",
+                "title": "Create Campaign",
+                "details":"Cet endpoint permet de créer une nouvelle campagne marketing. Le marchand ou l’application cliente doit spécifier les informations principales de la campagne, comme le sujet (topic), la date de publication prévue (publish_at) et l’identifiant de l’utilisateur qui en est l’auteur. Une fois créée, la campagne peut être utilisée pour programmer l’envoi d’e-mails ou la diffusion d’annonces ciblées aux clients. Cet endpoint est essentiel pour automatiser la planification de nouvelles actions marketing.",
+                "isProtected": true,
+                "description": "Create a new campaign",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 1
+                    },
+                    {
+                        "name": "topic",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Campagne de test"
+                    },
+                    {
+                        "name": "publish_at",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2023-04-01T12:00:00Z"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "user_id": "integer",
+                        "topic": "string",
+                        "publish_at": "string"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campagne créée avec succès",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne de test",
+                            "publish_at": "2023-04-01T12:00:00Z",
+                            "created_at": "2023-04-01T12:00:00Z",
+                            "updated_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ user_id: 1, topic: 'Campagne de test', publish_at: '2023-04-01T12:00:00Z' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/campaigns', json={'user_id': 1, 'topic': 'Campagne de test', 'publish_at': '2023-04-01T12:00:00Z'})"
+                }
+            },
+            {
+                "id": "campaign-by-id",
+                "method": "GET",
+                "path": "/api/campaigns/{id}",
+                "title": "Get Campaign",
+                "details":"This endpoint returns details of a specific campaign, identified by its unique identifier (id). It allows you to view the precise details of a campaign, including its subject and publication date. It is useful for displaying the details of a campaign in the administration interface or for retrieving data from an existing campaign before modifying it.",
+                "isProtected": false,
+                "description": "Retrieve a campaign by its identifier",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne de lancement",
+                            "publish_at": "2023-04-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/campaigns/1')"
+                }
+            },
+            {
+                "id": "update-campaign",
+                "method": "PUT",
+                "path": "/api/campaigns/{id}",
+                "title": "Update Campaign",
+                "details":"This endpoint allows you to modify the information in an existing campaign. The fields that can be updated include, for example, the subject and the publication date. It is used when the merchant wishes to adjust the content or planning of a campaign before it is published. This entry point ensures flexible and dynamic management of ongoing campaigns.",
+                "isProtected": false,
+                "description": "Updating a campaign",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "topic",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Campagne mise à jour"
+                    },
+                    {
+                        "name": "publish_at",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2023-05-01T12:00:00Z"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "topic": "string",
+                        "publish_at": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "id": 1,
+                            "user_id": 1,
+                            "topic": "Campagne mise à jour",
+                            "publish_at": "2023-05-01T12:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ topic: 'Campagne mise à jour', publish_at: '2023-05-01T12:00:00Z' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/campaigns/1', json={'topic': 'Campagne mise à jour', 'publish_at': '2023-05-01T12:00:00Z'})"
+                }
+            },
+            {
+                "id": "delete-campaign",
+                "method": "DELETE",
+                "path": "/api/campaigns/{id}",
+                "title": "Delete Campaign",
+                "details":"This endpoint deletes an existing campaign using its identifier. Once deleted, the campaign no longer appears in the lists and can no longer be scheduled for delivery. This operation is often used to clean up obsolete or cancelled campaigns before they are sent out.",
+                "isProtected": false,
+                "description": "Delete a campaign",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/campaigns/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/campaigns/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Templates",
+        "description":"Templates are at the heart of the DEVAITO publishing system. They serve as graphic models used to generate the images that accompany automatic publications on social networks such as Facebook or Instagram. Each template defines a visual structure (background, text zones, images, styles, etc.) that users can customise before publishing. Once the post has been finalised, the template - modified or not - is rendered as an image, ready to be published on the chosen platform. The endpoints in this section enable developers to list, create, consult, modify and delete these templates. They therefore form the basis of automated visual content management on DEVAITO.",
+        "endpoints": [
+            {
+                "id": "templates-list",
+                "method": "GET",
+                "path": "/api/templates",
+                "title": "List Templates",
+                "details":"This endpoint returns the full list of templates available on DEVAITO. It allows developers to display existing templates so that users can choose one as a starting point for their publications. This is often the first call made before creating or customising a post.",
+                "isProtected": false,
+                "description": "List all templates",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "data": []
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/templates')"
+                }
+            },
+            {
+                "id": "post-template",
+                "method": "POST",
+                "path": "/api/templates",
+                "title": "Create Template",
+                "details":"This entry point is used to add a new template to the system. It is used when a user or administrator wishes to add to the library of available templates. Each template is associated with a category, making it easier to organise and use them according to marketing or aesthetic needs.",
+                "isProtected": false,
+                "description": "Add a new template",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Template 1"
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "category_id": "integer"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Template ajouté",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Template 1', category_id: 3 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/templates', json={'name': 'Template 1', 'category_id': 3})"
+                }
+            },
+            {
+                "id": "template-by-id",
+                "method": "GET",
+                "path": "/api/templates/{id}",
+                "title": "Get Template",
+                "details":"This endpoint returns detailed information about a specific template, identified by its ID. It is mainly used when you want to display or modify an existing template before using it to generate a publication.",
+                "isProtected": false,
+                "description": "Get a template by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/templates/1')"
+                }
+            },
+            {
+                "id": "update-template",
+                "method": "PUT",
+                "path": "/api/templates/{id}",
+                "title": "Update Template",
+                "details":"This endpoint updates the information of an existing template, in particular its name or category. It enables administrators to keep the template library up to date and adapt templates to new graphic styles or campaigns.",
+                "isProtected": false,
+                "description": "Modifying a template",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Template 1"
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "body",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": 3
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "name": "string",
+                        "category_id": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1', {",
+                        "  method: 'PUT',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ name: 'Template 1', category_id: 3 })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.put('https://[shop-name].devaito.com/api/templates/1', json={'name': 'Template 1', 'category_id': 3})"
+                }
+            },
+            {
+                "id": "delete-template",
+                "method": "DELETE",
+                "path": "/api/templates/{id}",
+                "title": "Delete Template",
+                "details":"This endpoint removes a specific template from the system. It is used to remove obsolete or unused templates in order to keep the library clear and relevant for users.",
+                "isProtected": false,
+                "description": "Delete a template",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "inputType": "text",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {}
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/templates/1', {",
+                        "  method: 'DELETE'",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.delete('https://[shop-name].devaito.com/api/templates/1')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Facebook Posts",
+        "description":"This section groups together the endpoints used to publish or schedule posts on Facebook. They ensure communication between DEVAITO and the Facebook API to manage publication on one or more professional pages linked to the user account. These endpoints can also be used to retrieve available pages and manage the scheduling of publications using the jobs system.",
+        "endpoints": [
+            {
+                "id": "facebook-publish-post-job",
+                "method": "POST",
+                "path": "/api/facebook/publish-post-job",
+                "title": "Publish Facebook Post Job",
+                "details":"Function: schedules the publication of a post on one or more Facebook pages on a given date. This endpoint allows you to create a scheduled job to publish an image with a caption on Facebook. The user can specify the identifiers of the pages on which the post is to appear, the desired publication date and the URL of the image. Once the job has been saved, DEVAITO automatically calculates the execution time in UTC according to the user's time zone. This endpoint is ideal for planned content strategies or automated management of social networks.",
+                "isProtected": false,
+                "description": "Publish a post on Facebook with a scheduled job",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Voici un nouveau post sur Facebook!"
+                    },
+                    {
+                        "name": "datePublish",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2025-04-30 10:00"
+                    },
+                    {
+                        "name": "pageId",
+                        "in": "body",
+                        "type": "array",
+                        "inputType": "text",
+                        "example": [
+                            "1234567890",
+                            "0987654321"
+                        ]
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string",
+                        "datePublish": "string",
+                        "pageId": "array"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "message": "Job planifié avec succès",
+                            "job_id": 123,
+                            "timezone_used": "Africa/Casablanca",
+                            "execution_time_utc": "2025-04-30T09:00:00Z"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/publish-post-job', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Voici un nouveau post sur Facebook!', datePublish: '2025-04-30 10:00', pageId: ['1234567890', '0987654321'] })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/facebook/publish-post-job', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Voici un nouveau post sur Facebook!', 'datePublish': '2025-04-30 10:00', 'pageId': ['1234567890', '0987654321']})"
+                }
+            },
+            {
+                "id": "facebook-publish-post",
+                "method": "POST",
+                "path": "/api/facebook/publish-post",
+                "title": "Publish Facebook Post",
+                "details":"Function: schedules the publication of a post on one or more Facebook pages on a given date. This endpoint allows you to create a scheduled job to publish an image with a caption on Facebook. The user can specify the identifiers of the pages on which the post is to appear, the desired publication date and the URL of the image. Once the job has been saved, DEVAITO automatically calculates the execution time in UTC according to the user's time zone. This endpoint is ideal for planned content strategies or automated management of social networks.",
+                "isProtected": false,
+                "description": "Publish a post on one or more Facebook pages instantly",
+                "parameters": [
+                    {
+                        "name": "page_id",
+                        "in": "body",
+                        "type": "array",
+                        "inputType": "text",
+                        "example": [
+                            "1234567890",
+                            "0987654321"
+                        ]
+                    },
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Voici un nouveau post sur Facebook!"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "page_id": "array",
+                        "imageUrl": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "results": [
+                                {
+                                    "page_id": "1234567890",
+                                    "success": true,
+                                    "url": "https://www.facebook.com/1234567890/posts/12345",
+                                    "post_id": "12345",
+                                    "message": "Post publié avec succès"
+                                },
+                                {
+                                    "page_id": "0987654321",
+                                    "success": false,
+                                    "error": {
+                                        "message": "Erreur de publication"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/publish-post', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ page_id: ['1234567890', '0987654321'], imageUrl: 'https://example.com/image.jpg', caption: 'Voici un nouveau post sur Facebook!' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/facebook/publish-post', json={'page_id': ['1234567890', '0987654321'], 'imageUrl': 'https://example.com/image.jpg', 'caption': 'Voici un nouveau post sur Facebook!'})"
+                }
+            },
+            {
+                "id": "facebook-pages",
+                "method": "GET",
+                "path": "/api/facebook/pages",
+                "title": "Get Facebook Pages",
+                "details":"Function: instantly publish a post on one or more connected Facebook pages. This endpoint immediately sends a publication to Facebook, without going through a scheduled job. The user can publish the same image and caption to several pages simultaneously. Each publication attempt returns a result indicating the success or failure of the publication, together with the URL of the post created on Facebook where applicable. This mechanism enables rapid publication, perfect for one-off campaigns or urgent posts.",
+                "isProtected": false,
+                "description": "Retrieve the user's Facebook pages",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "pages": [
+                                {
+                                    "name": "Page 1",
+                                    "page_id": "1234567890",
+                                    "image_url": "https://graph.facebook.com/1234567890/picture"
+                                },
+                                {
+                                    "name": "Page 2",
+                                    "page_id": "0987654321",
+                                    "image_url": "https://graph.facebook.com/0987654321/picture"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/facebook/pages');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/facebook/pages')"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Instagram Posts",
+        "description":"Cette section regroupe les endpoints relatifs à la publication sur Instagram. Elle permet aussi bien la planification que la publication instantanée de posts, en s’appuyant sur le système d’automatisation de DEVAITO et sur les connexions aux comptes professionnels Instagram. Les développeurs peuvent ainsi orchestrer des campagnes visuelles sur plusieurs plateformes depuis une interface unique.",
+        "endpoints": [
+            {
+                "id": "instagram-publish-post-job",
+                "method": "POST",
+                "path": "/api/instagram/publish-post-job",
+                "title": "Publish Instagram Post Job",
+                "details":"Function: schedules the publication of a post on Instagram on a specific date. This endpoint allows you to create a job which will automatically publish an Instagram post at the scheduled time. It takes as input the URL of the image, the caption and the desired publication date. When scheduling, DEVAITO converts the local date into UTC time and keeps the time zone used as a reference. This mechanism is ideal for automating the distribution of visual content at specific times, without manual intervention.",
+                "isProtected": false,
+                "description": "Planning an Instagram post",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Post programmé avec job Laravel"
+                    },
+                    {
+                        "name": "datePublish",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "2025-04-18 15:30"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string",
+                        "datePublish": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "message": "Post Instagram planifié avec succès",
+                            "execution_time_utc": "2025-04-18 14:30:00",
+                            "timezone_used": "Africa/Casablanca"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/instagram/publish-post-job', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Post programmé avec job Laravel', datePublish: '2025-04-18 15:30' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/instagram/publish-post-job', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Post programmé avec job Laravel', 'datePublish': '2025-04-18 15:30'})"
+                }
+            },
+            {
+                "id": "instagram-publish-post",
+                "method": "POST",
+                "path": "/api/instagram/publish-post",
+                "title": "Publish Instagram Post",
+                "details":"Function: immediately publish a post on the connected professional Instagram account. This endpoint allows you to send an image and caption directly to Instagram, without waiting or planning. In response, it returns a table containing the status of the publication, the identifier of the post created and any error messages. This process simplifies instant publications, which are useful for spontaneous communications or real-time campaigns.",
+                "isProtected": false,
+                "description": "Publish a post immediately on Instagram",
+                "parameters": [
+                    {
+                        "name": "imageUrl",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    {
+                        "name": "caption",
+                        "in": "body",
+                        "type": "string",
+                        "inputType": "text",
+                        "example": "Mon super post Instagram"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    "body": {
+                        "imageUrl": "string",
+                        "caption": "string"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "results": [
+                                {
+                                    "page_id": "string",
+                                    "success": true,
+                                    "post_id": "string",
+                                    "message": "string",
+                                    "error": {}
+                                }
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/instagram/publish-post', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Content-Type': 'application/json'",
+                        "  },",
+                        "  body: JSON.stringify({ imageUrl: 'https://example.com/image.jpg', caption: 'Mon super post Instagram' })",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.post('https://[shop-name].devaito.com/api/instagram/publish-post', json={'imageUrl': 'https://example.com/image.jpg', 'caption': 'Mon super post Instagram'})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Media",
+        "description":"The Media section brings together the functions that enable users to upload and manage their multimedia files (images and videos) within the DEVAITO platform. These media are stored securely and become accessible from the user dashboard, where they can be reused to personalise a store, enhance a template or illustrate a publication. This functionality makes it possible to offer a personalised visual experience that is consistent with the identity of the user's brand or business.  The following endpoints enable files to be saved on the server via requests protected by Bearer authentication, guaranteeing the security and confidentiality of content.",
+        "endpoints": [
+            {
+                "id": "save-image",
+                "method": "POST",
+                "path": "/api/save-image",
+                "title": "Save Image",
+                "details":"Function: saves an image on the user's server. This endpoint allows an authenticated user to send an image via a multipart form. Once the file has been uploaded successfully, the server returns the public link for the image, which is now stored in the account's storage space. Uploaded images can then be used to personalise a store or template, or to illustrate a post on social networks.",
+                "isProtected": true,
+                "description": "Saving an image",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "type": "file",
+                        "inputType": "file",
+                        "example": "image.jpg"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "multipart/form-data",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "file_link": "https://test27382.devaito.com/public/storage/2025/Feb/884ofG3ZMMd1A3Vbj7GispFkO0Pz0tnlsg7iU8H9.jpg"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const formData = new FormData();",
+                        "formData.append('file', fileInput.files[0]);",
+                        "const response = await fetch('https://[shop-name].devaito.com/api/save-image', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  },",
+                        "  body: formData",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nfiles = {'file': open('image.jpg', 'rb')}\nresponse = requests.post('https://[shop-name].devaito.com/api/save-image', headers={'Authorization': 'Bearer token'}, files=files)"
+                }
+            },
+            {
+                "id": "save-video",
+                "method": "POST",
+                "path": "/api/save-video",
+                "title": "Save Video",
+                "details":"Function: records a video on the server. This endpoint offers the same functionality as the image endpoint, but applied to videos. It allows users to store their video files directly on their account, so that they can be integrated into their visuals or campaigns. The video link is returned in the response, ready to be used in the dashboard or when generating personalised multimedia content.",
+                "isProtected": true,
+                "description": "Save a video",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "type": "file",
+                        "inputType": "file",
+                        "example": "video.mp4"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Content-Type": "multipart/form-data",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "file_link": "https://test27382.devaito.com/public/storage/2025/Feb/vid123456.mp4"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const formData = new FormData();",
+                        "formData.append('file', fileInput.files[0]);",
+                        "const response = await fetch('https://[shop-name].devaito.com/api/save-video', {",
+                        "  method: 'POST',",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  },",
+                        "  body: formData",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nfiles = {'file': open('video.mp4', 'rb')}\nresponse = requests.post('https://[shop-name].devaito.com/api/save-video', headers={'Authorization': 'Bearer token'}, files=files)"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Gallery",
+        "description":"The Gallery section groups together the endpoints used to manage and view the media files used in a store. It plays a key role in the visual personalisation of the store and in the management of user-generated or imported media. When the store is created, DEVAITO's artificial intelligence automatically selects images and videos based on the context defined by the user (name, type, store description, business sector, etc.). These media are used to illustrate the store initially generated by the AI. Users can then consult these elements, add their own or replace them via their dashboard. The endpoints in this section can be used to: retrieve the media generated or imported automatically by the AI for a given store and consult the user's personal gallery (images or videos uploaded manually).",
+        "endpoints": [
+            {
+                "id": "gallery-store",
+                "method": "GET",
+                "path": "/api/gallery-store",
+                "title": "Get Gallery Store",
+                "details":"This endpoint returns all the visual resources (images and videos) used in the user's store. It brings together both the files selected by the generation AI and those added manually by the user to their store interface. Each resource is returned as a URL, making it easy to display them directly in the dashboard or in the store customisation editor. Typical use: dynamic display of the store gallery in the dashboard to preview or modify existing visual elements.",
+                "isProtected": true,
+                "description": "Return all images and videos present on the user's store (URL)",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "all_urls": [
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150",
+                                "https://images.pexels.com/photos/726233/pexels-photo-726233.jpeg?width=150&height=113",
+                                "https://videos.pexels.com/video-files/3611035/3611035-hd_1920_1080_24fps.mp4?t=1727888820655",
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150",
+                                "https://images.pexels.com/photos/726233/pexels-photo-726233.jpeg?width=150&height=113",
+                                "https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg?h=150"
+                            ]
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/gallery-store', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/gallery-store', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "image-gallery",
+                "method": "GET",
+                "path": "/api/image-gallery",
+                "title": "Get Image Gallery",
+                "details":"This endpoint retrieves the gallery of images uploaded by the user. The results are paginated to optimise loading and display. Each image contains metadata such as the name, public URL and date added. Typical use: display of all the user's personal images in the dashboard, with the option of reusing them in a template, a product or a section of the store.",
+                "isProtected": false,
+                "description": "Retrieve the image gallery",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "images": [
+                                {
+                                    "id": 1,
+                                    "name": "image1.jpg",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/image1.jpg",
+                                    "created_at": "2025-02-27T12:00:00Z"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "image2.png",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/image2.png",
+                                    "created_at": "2025-02-27T12:05:00Z"
+                                }
+                            ],
+                            "total": 50,
+                            "current_page": 1,
+                            "last_page": 3
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/image-gallery?page=1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/image-gallery', params={'page': 1})"
+                }
+            },
+            {
+                "id": "video-gallery",
+                "method": "GET",
+                "path": "/api/video-gallery",
+                "title": "Get Video Gallery",
+                "details":"This endpoint works in the same way as the image endpoint, but for video files. It allows the user to consult the gallery of videos previously uploaded by the user. As with the image gallery, pagination is managed on the server side to improve performance and the user experience. Typical use: display of available videos in the dashboard, enabling the user to integrate them into banners, presentation sections or promotional content.",
+                "isProtected": false,
+                "description": "Retrieve the video gallery",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer",
+                        "inputType": "number",
+                        "example": "1"
+                    }
+                ],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "success": true,
+                            "videos": [
+                                {
+                                    "id": 1,
+                                    "name": "video1.mp4",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/video1.mp4",
+                                    "created_at": "2025-02-27T12:10:00Z"
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "video2.avi",
+                                    "url": "https://test27382.devaito.com/public/storage/2025/Feb/video2.avi",
+                                    "created_at": "2025-02-27T12:15:00Z"
+                                }
+                            ],
+                            "total": 30,
+                            "current_page": 1,
+                            "last_page": 2
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/video-gallery?page=1');"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/video-gallery', params={'page': 1})"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Store Settings",
+        "description":"This section groups together the endpoints relating to general information about the store. During the creation process, the user enters several elements - such as the description of the store, the desired language, the typography, the main colours, etc. - which are then used by DEVAITO's AI to automatically generate a coherent and customisable store. The endpoints below can be used to retrieve this information in order to display or modify the visual and linguistic parameters of the store.",
+        "endpoints": [
+            {
+                "id": "get-store-prompt",
+                "method": "GET",
+                "path": "/api/get-store-prompt",
+                "title": "Get Store Prompt",
+                "details":"Retrieves the initial prompt for the store, i.e. the text description provided by the user when creating their store. This prompt was used by DEVAITO's AI to automatically generate the content, structure and visuals for the store.",
+                "isProtected": true,
+                "description": "Retrieve the blind prompt",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "prompt": "Example: A cozy cat café in LA called Meow. , products_services : Events and workshop"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-store-prompt', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-store-prompt', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "get-store-language",
+                "method": "GET",
+                "path": "/api/get-store-language",
+                "title": "Get Store Language",
+                "details":"Récupère la langue du store définie par l’utilisateur lors de la configuration initiale. Cette information est utilisée par DEVAITO pour ajuster la langue du contenu généré et les textes d’interface.",
+                "isProtected": true,
+                "description": "Retrieve the language from the store",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "language": "Anglais"
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/get-store-language', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/get-store-language', headers={'Authorization': 'Bearer token'})"
+                }
+            },
+            {
+                "id": "fonts-and-colors",
+                "method": "GET",
+                "path": "/api/fonts-and-colors",
+                "title": "Get Fonts and Colors",
+                "details":"Returns the fonts and colours used in the store interface. These parameters define the visual identity of the store (titles, text, buttons, backgrounds, etc.) and are applied automatically by the AI during setup.",
+                "isProtected": true,
+                "description": "Retrieve fonts and colours",
+                "parameters": [],
+                "request": {
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer token"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "example": {
+                            "data": {
+                                "h1": {
+                                    "font": "Arial",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h2": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h3": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "h4": {
+                                    "font": "Cabin Sketch",
+                                    "light_color": "#FFC700",
+                                    "dark_color": "#F4F4F3"
+                                },
+                                "paragraph": {
+                                    "font": "Nunito",
+                                    "light_color": "#383838",
+                                    "dark_color": "#FFC700"
+                                },
+                                "button": {
+                                    "light_color": "#383838",
+                                    "dark_color": "#FFD730",
+                                    "light_bg": "#FFD730",
+                                    "dark_bg": "#F4F4F3"
+                                },
+                                "body": {
+                                    "light_bg": "#F4F4F3",
+                                    "dark_bg": "#FFD730"
+                                }
+                            }
+                        }
+                    }
+                },
+                "codeSamples": {
+                    "javascript": [
+                        "const response = await fetch('https://[shop-name].devaito.com/api/fonts-and-colors', {",
+                        "  headers: {",
+                        "    'Authorization': 'Bearer token'",
+                        "  }",
+                        "});",
+                        "const data = await response.json();"
+                    ],
+                    "python": "import requests\nresponse = requests.get('https://[shop-name].devaito.com/api/fonts-and-colors', headers={'Authorization': 'Bearer token'})"
+                }
+            }
+        ]
+    }
+]
