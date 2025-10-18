@@ -1,3 +1,22 @@
+import axios from "axios";
+
+// axios.interceptors.request.use(
+//   (config) => {
+//     // Modifier la configuration de la requête avant son envoi
+//     // Par exemple, ajouter un en-tête d'autorisation
+//     // const token = localStorage.getItem('authToken');
+//     // if (token) {
+//     //   config.headers.Authorization = `Bearer ${token}`;
+//     // }
+//     console.log('Requête interceptée !', config);
+//     return config;
+//   },
+//   (error) => {
+//     // Gérer les erreurs liées à l'intercepteur de requêtes
+//     return Promise.reject(error);
+//   }
+// );
+
 /**
  * Effectue une requête GET pour récupérer des ressources depuis une API.
  * @param {string} url - L'URL de l'API.
@@ -21,13 +40,14 @@ export async function getResource(url, options = {}) {
     });
 
     if (!response.ok) {
+      console.log(response)
       throw new Error(`Erreur HTTP ${response.status}: ${response.statusText} pour l'URL ${url}`);
     }
 
     // Vérifier si la réponse a un contenu
     const contentType = response.headers.get("Content-Type");
     if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("La réponse n'est pas au format JSON");
+      throw new Error("The response is not in JSON format");
     }
 
     return await response.json();
@@ -55,11 +75,14 @@ export async function postResource(url, data, options = {}) {
     throw new Error("Data must be a non-null object");
   }
 
+  // console.dir(JSON.stringify(data));
+  // console.log(url);
+
   try {
     const response = await fetch(url, {
       method: "POST", // Forcer la méthode POST
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         ...(options.headers || {}),
       },
       body: JSON.stringify(data),
@@ -69,13 +92,15 @@ export async function postResource(url, data, options = {}) {
       ),
     });
 
+    // const response = await axios.post(url, data);
+
     if (!response.ok) {
       throw new Error(`Erreur HTTP ${response.status}: ${response.statusText} pour l'URL ${url}`);
     }
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("La réponse n'est pas au format JSON");
+      throw new Error("The response is not in JSON format");
     }
 
     return await response.json();

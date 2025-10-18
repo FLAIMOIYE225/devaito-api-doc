@@ -4,20 +4,20 @@ import { useState } from "react";
 
 
 // Component
-export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCurrentEndpoint, activeSection, setActiveSection, search}) => {
+export const DropDownMenu = ({children, section, activeSection}) => {
 
     /* State */
-    const [extend, setExtend] = useState(false);
+    const [expand, setExtend] = useState(false);
 
     /* Constants */
 
     /* Fonctions */
-    const endpointFilter = (endpoint) => {
-        const searchLower = search.toLowerCase();
+    // const endpointFilter = (endpoint) => {
+    //     const searchLower = search.toLowerCase();
 
-        if (section.name.toLowerCase().includes(searchLower)) return true;
-        return endpoint.title.toLowerCase().includes(searchLower);
-    }
+    //     if (section.name.toLowerCase().includes(searchLower)) return true;
+    //     return endpoint.title.toLowerCase().includes(searchLower);
+    // }
 
     /* Effects & Memos  */
 
@@ -27,8 +27,9 @@ export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCu
     return <>
         <div 
             className="nav-section" 
-            onClick={() => {
-                setExtend(!extend);
+            onClick={(e) => {
+                e.stopPropagation();
+                setExtend(!expand);
             }}
         >
 
@@ -36,7 +37,7 @@ export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCu
                 className={`nav-section-title ${activeSection === section.name ? 'section-active' : ''}`}
             >
                 {
-                    extend ? (
+                    expand ? (
                         <svg className="expandIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" htmlclass="bi bi-caret-down-fill" viewBox="0 0 16 16">
                             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                         </svg>
@@ -48,40 +49,12 @@ export const DropDownMenu = ({setCurrentSection, section, currentEndpoint, setCu
                 }
                 <span>{section.name}</span>
             </button>
-            
-            {section.endpoints.filter(endpointFilter).map( (endpoint, index) => {
 
-                return ( extend &&
-                    <div 
-                        className={`nav-item ${currentEndpoint === endpoint.id ? "active-endpoint" : ''}`}
-                        data-section="auth" 
-                        key={index} 
-                        // onClick={() => setCurrentSection(section.endpoints)}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            // setCurrentSection(section.endpoints);
-                            setActiveSection(section.name);
-                            setCurrentSection(section);
-                            setCurrentEndpoint(endpoint.id);
-                            setTimeout(() => {
-                                const mainContentSection = document.getElementById(`${endpoint.id}-section`);
-                                if (mainContentSection) {
-                                    mainContentSection.scrollIntoView({ behavior: 'smooth' });
-                                }
-                            }, 0);
-                            // const mainContentSection = document.getElementById(`${endpoint.id}-section`);
-                            // if (mainContentSection) {
-                            //     mainContentSection.scrollIntoView({ behavior: 'smooth' });
-                            // }
-                        }}
-                    >
-                        <div className={`nav-item-icon method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</div>
-                        <span>{endpoint.title}</span>
-                    </div>
-                )
-
-            })}
+            { expand &&
+                <>
+                    {children}
+                </>
+            }
 
         </div>
     </>

@@ -232,6 +232,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
               {/* <div>
                 {JSON.stringify(inputValues, null, 4)}
+                {JSON.stringify(requestBody, null, 4)}
               </div> */}
 
               <br />
