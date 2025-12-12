@@ -32,19 +32,24 @@ export default function Sidebar({setCurrentSection, sections}){
             return true
         };
 
+        // subsection
         if (section.subsections){
             return section.subsections.some(subsection => // Vérifier si au moins une des subsections ou un des endpoints de la subsection match avec search
                 subsection.name.toLowerCase().includes(searchLower) // Vérifier si au moins une des subsection match avec search
                 || // Ou
                 subsection.endpoints.some(endpoint => // Vérifier si au moins un des endpoints de la subsection match avec search
                     endpoint.title.toLowerCase().includes(searchLower)
+                    ||
+                    endpoint.path.toLowerCase().includes(searchLower)
                 )
             );
         }
 
         // Vérifie si au moins un endpoint correspond
         return section.endpoints.some(endpoint => // Vérifier si au moins un des endpoints match avec search
-            endpoint.title.toLowerCase().includes(searchLower)
+            endpoint.title.toLowerCase().includes(searchLower) 
+            || 
+            endpoint.path.toLowerCase().includes(searchLower)
         );
     };
 
@@ -82,6 +87,8 @@ export default function Sidebar({setCurrentSection, sections}){
 
                                             return subsection.endpoints.some(endpoint => // Vérifier si au moins un des endpoints de la subsection match avec search
                                                 endpoint.title.toLowerCase().includes(searchLower)
+                                                ||
+                                                endpoint.path.toLowerCase().includes(searchLower)
                                             )
                                         })
                                         .map((section) => {

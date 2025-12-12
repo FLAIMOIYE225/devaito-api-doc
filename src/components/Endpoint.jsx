@@ -1,141 +1,187 @@
+/* React Imports */
 import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs";
+import "prismjs/themes/prism.css";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-json";
+
+
+
+/* Utils */
 import copy from "../utils/clipborad";
-import { getResource, postResource, requestResource } from "../utils/api/requestHandler";
-import { parseUrl, buildRequestBody } from "../utils/formatters/requestFormatter";
+import { parseUrl, buildRequestBody, buildUrl } from "../utils/formatters/requestFormatter";
 import { notifySuccess, notifyError } from "../utils/notify";
+
+/* APIs */
+import { getResource, postResource, requestResource } from "../api/requestHandler";
 
 export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
-  /* States */
-  const [activeTab, setActiveTab] = useState("try"); // onglet actif (par défaut "try")
+  /* -------------------------------------------- */
+  /* STATES                                       */
+  /* -------------------------------------------- */
+
+  const [activeTab, setActiveTab] = useState("try");
   const [response, setResponse] = useState({});
   const [showResponse, setShowResponse] = useState(false);
   const [responseStr, setResponseStr] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [inputValues, setInputValues] = useState(() => { // Initialisation de l'état inputValues avec les paramètres
+  const [error, setError] = useState("");
+  const [requestBody, setRequestBody] = useState({});
+
+  const [isThereJsonError, setIsThereJsonError] = useState(false);
+
+  /** Initialize input values including headers coming from parameters */
+  const [inputValues, setInputValues] = useState(() => {
     const initialValues = {
-      token: token,
-      shopname: '',
+      token: token || "",
+      shopname: "",
     };
-    endpoint.parameters.forEach((parameter) => {
-      initialValues[parameter.name] = ""; // Utiliser example si disponible, sinon ""
+    endpoint.parameters.forEach((p) => {
+      // initialValues[p.name] = p.example || "";
+      initialValues[p.name] = ""
     });
     return initialValues;
   });
-  const [error, setError] = useState("");
-  const [requestBody, setRequestBody] = useState({})
-  // const [token, setToken] = useState('');
-  // const [shopname, setshopname] = useState('');
 
+  /* -------------------------------------------- */
+  /* DERIVED VALUES                               */
+  /* -------------------------------------------- */
 
+  /** Build real headers dynamically */
+  const buildHeadersFromInputs = () => {
+    let headers = { ...endpoint.request.headers };
 
-  /* Constantes */
-  const codeContent = endpoint.codeSamples.javascript.join("\n");
-  const headers = Object.keys(endpoint.request.headers).map((key) => `${key}: ${endpoint.request.headers[key]}`).join("\n");
-  const example = JSON.stringify(endpoint.responses["200"]?.example, null, 4);
+    // Insert Authorization header if the API requires token
+    if (inputValues.token) {
+      headers["Authorization"] = `Bearer ${inputValues.token}`;
+    }
 
+    // Add parameters that belong to headers
+    endpoint.parameters
+      .filter((p) => p.in === "header")
+      .forEach((p) => {
+        if (inputValues[p.name]) {
+          headers[p.name] = inputValues[p.name];
+        }
+      });
 
-
-  /* Functions */
-
-
-
-
-  /* Event Handlers */
-  const handleChange = (e) => { // Gestionnaire de changement pour les inputs
-    const { name, value } = e.target;
-
-    setInputValues((prev) => ({
-      ...prev, // Conserver les autres valeurs
-      [name]: value, // Mettre à jour la valeur correspondante
-    }));
+    return headers;
   };
 
-  const tryEndpoint = async () => { // Permet de tester l'endpoint: Il envoie la requête à l'API et affiche le résultat dans la partie dédiée.
+  const dynamicHeaders = buildHeadersFromInputs();
+
+  const headerCodeBlock = Object.keys(dynamicHeaders)
+    .map((key) => `${key}: ${dynamicHeaders[key]}`)
+    .join("\n");
+
+
+  const example = JSON.stringify(endpoint.responses["200"]?.example, null, 4);
+  const codeContent = endpoint.codeSamples.javascript.join("\n");
+
+  /* -------------------------------------------- */
+  /* EVENT HANDLERS                               */
+  /* -------------------------------------------- */
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setInputValues((prev) => ({ ...prev, [name]: value }));
+  // };
+
+  const handleChange = (arg1, arg2) => {
+    // Case 1: Editor -> handleChange("fieldName", "newValue")
+    if (typeof arg1 === "string" && typeof arg2 === "string") {
+      const name = arg1;
+      const value = arg2;
+
+      setInputValues(prev => ({ ...prev, [name]: value }));
+      return;
+    }
+
+    // Case 2: Normal input event
+    const e = arg1;
+    const { name, value } = e.target;
+    setInputValues(prev => ({ ...prev, [name]: value }));
+  };
+
+
+  const tryEndpoint = async () => {
     setShowResponse(true);
     setIsloading(true);
+    setError("");
 
     try {
-      const url = parseUrl(baseShopUrl + endpoint.path, inputValues);
+      let url = parseUrl(baseShopUrl + endpoint.path, inputValues);
+      url = buildUrl(url, endpoint.parameters, inputValues);
 
-      // const options = {}
-      const options = { headers: endpoint.request.headers}
-      // Ajouter le  token au header dans le cas où la requête est protégé
-      
-      // if (endpoint.isProtected || endpoint?.isProtected){
-      //   if (!inputValues.token) throw new Error("This endpoint is protected by a token. First obtain a token using the endpoint `/api/login`.");
-      //   options.headers['Authorization'] = `Bearer ${inputValues.token}`;
-      // }
+      const headers = buildHeadersFromInputs();
+      const options = { headers };
 
-      options.headers['Authorization'] = `Bearer ${inputValues.token}`;
+      let responseData;
 
-      if ( endpoint.method === 'GET'){
-        const responseData = await getResource(url, options);
-        setResponse(responseData);
-
-        if (error) setError('');
-
-      } else if (endpoint.method === 'POST'){
-          // const body = buildRequestBody(endpoint.parameters, inputValues);
-          // const responseData = await postResource(url + endpoint.path, body);
-          const responseData = await postResource(url, requestBody, options);
-          setResponse(responseData);
-
-          if (responseData.token){
-            setToken(responseData.token);
-          }
-
-          if (error) setError('');
+      if (endpoint.method === "GET") {
+        responseData = await getResource(url, options);
+      } else if (endpoint.method === "POST") {
+        responseData = await postResource(url, requestBody, options);
       } else {
-        const responseData = await requestResource(url, endpoint.method, requestBody, options);
-        setResponse(responseData);
-
-        if (error) setError('');
+        responseData = await requestResource(url, endpoint.method, requestBody, options);
       }
 
-      notifySuccess("Request treated with success!");
+      setResponse(responseData);
 
-    } catch (error){
-      console.error(`${error.message}`);
-      setError(`${error.message}`);
-      notifyError("Error during query processing!");
+      if (responseData.token) {
+        setToken(responseData.token);
+      }
+
+      notifySuccess("Request completed successfully!");
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+      notifyError("An error occurred while processing the request.");
     }
 
     setIsloading(false);
   };
 
+  /* -------------------------------------------- */
+  /* EFFECTS                                      */
+  /* -------------------------------------------- */
 
-
-  // Memos / Effects
-  useEffect( () =>{
+  useEffect(() => {
     setResponseStr(JSON.stringify(response, null, 4));
   }, [response]);
 
-  useEffect( () => {
-    setInputValues( (prev) => {
-      return {
-        ...prev,
-        token: token
-      }
-    });
+  useEffect(() => {
+    setInputValues((prev) => ({ ...prev, token }));
   }, [token]);
 
   useEffect(() => {
-    setRequestBody(buildRequestBody(endpoint.parameters, inputValues));
+    try {
+      setIsThereJsonError(false);
+      setRequestBody(buildRequestBody(endpoint.parameters, inputValues));
+    } catch (err) {
+      console.warn("Invalid JSON in editor");
+      // notifyError("Invalid JSON in editor");
+      setIsThereJsonError(true);
+    }
   }, [endpoint.parameters, inputValues]);
 
 
+  /* -------------------------------------------- */
+  /* JSX                                          */
+  /* -------------------------------------------- */
 
-  // HTML Jsx Code
   return (
     <div className="endpoint-section" id={`${endpoint.id}-section`}>
+
+      {/* HEADER -------------------------------------------------------- */}
       <div className="endpoint-header">
         <div className="endpoint-title">
-          <span
-            className={`method-badge method-${endpoint.method.toLowerCase()}`}
-          >
+          <span className={`method-badge method-${endpoint.method.toLowerCase()}`}>
             {endpoint.method}
           </span>
           <span className="endpoint-path">{endpoint.path}</span>
@@ -143,205 +189,202 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
         <div className="endpoint-description">{endpoint.description}</div>
       </div>
 
+      {/* BODY ---------------------------------------------------------- */}
       <div className="endpoint-body">
-        {/* Boutons d’onglets */}
+
+        {/* TABS */}
         <div className="tabs">
-          <button
-            className={`tab ${activeTab === "try" ? "active" : ""}`}
-            onClick={() => setActiveTab("try")}
-          >
-            Try
-          </button>
+          {["try", "request", "response", "code"].map((tab) => (
+            <button
+              key={tab}
+              className={`tab ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
 
-          <button
-            className={`tab ${activeTab === "request" ? "active" : ""}`}
-            onClick={() => setActiveTab("request")}
-          >
-            Request
-          </button>
-
-          <button
-            className={`tab ${activeTab === "response" ? "active" : ""}`}
-            onClick={() => setActiveTab("response")}
-          >
-            Response
-          </button>
-
-          <button
-            className={`tab ${activeTab === "code" ? "active" : ""}`}
-            onClick={() => setActiveTab("code")}
-          >
-            Code
-          </button>
-          {endpoint.details && <button
-            className={`tab ${activeTab === "details" ? "active" : ""}`}
-            onClick={() => setActiveTab("details")}
-          >
-            Details
-          </button>}
+          {endpoint.details && (
+            <button
+              className={`tab ${activeTab === "details" ? "active" : ""}`}
+              onClick={() => setActiveTab("details")}
+            >
+              Details
+            </button>
+          )}
         </div>
 
-        {/* Contenus d’onglets */}
+        {/* ------------------------- TRY TAB ------------------------- */}
         {activeTab === "try" && (
           <div className="tab-content active">
             <div className="try-it-section">
+
+              {/* Shop name */}
               <div className="form-group">
                 <label className="form-label">Shop Name</label>
                 <input
-                  type='text'
+                  type="text"
                   className="form-input"
-                  name='shopname'
+                  name="shopname"
                   value={inputValues.shopname}
                   onChange={handleChange}
-                  placeholder='myshopname'
+                  placeholder="myshopname"
                 />
               </div>
-              {endpoint.parameters.map((parameter, index) => {
-                const parameterName =
-                  parameter.name.charAt(0).toUpperCase() +
-                  parameter.name.slice(1);
-                  // console.log(inputValues[parameter.name]);
 
-                return (
-                  <div className="form-group" key={index}>
-                    <label className="form-label">{parameterName} ({parameter.type})</label>
-                    <input
-                      type={parameter.inputType}
-                      className="form-input"
-                      name={parameter.name}
-                      value={inputValues[parameter.name]}
-                      onChange={handleChange}
-                      placeholder={parameter.example}
+              {/* Dynamic parameters */}
+              {endpoint.parameters.map((p, index) => (
+                <div className="form-group" key={index}>
+                  <label className="form-label">
+                    {p.name} ({p.type}) {p.in === "header" ? "[Header]" : ""}
+                  </label>
+                  {p.is_object && <div className="editor-container">
+                    {p.is_object && isThereJsonError && <small className="error-marker">• Syntax Error</small>}
+                    {/* <textarea
+                        className="form-input"
+                        name={p.name}
+                        value={inputValues[p.name]}
+                        onChange={handleChange}
+                        placeholder={JSON.stringify(p.example)}
+                    /> */}
+                    <Editor
+                      value={inputValues[p.name]}
+                      onValueChange={code => handleChange(p.name, code)}
+                      highlight={code => highlight(code, languages.json)}
+                      padding={10}
+                      className="code-editor"
                     />
-                  </div>
-                );
-              })}
+                  </div>}
+                  {!p.is_object &&
+                    <input
+                        type={p.inputType || "text"}
+                        className="form-input"
+                        name={p.name}
+                        value={inputValues[p.name]}
+                        onChange={handleChange}
+                        placeholder={p.example}
+                    />
+                  }
+                </div>
+              ))}
 
+              {/* Submit Button */}
               <button className="btn btn-primary" onClick={tryEndpoint}>
                 <div className={`spinner-container ${isLoading ? "" : "hidden"}`}>
-                  <div
-                    className="spinner-border"
-                    role="status"
-                    style={{ width: 20, height: 20 }}
-                  >
+                  <div className="spinner-border" role="status" style={{ width: 20, height: 20 }}>
                     <span className="visually-hidden"></span>
                   </div>
                 </div>
                 Try {endpoint.title}
               </button>
 
-              {/* <div>
-                {JSON.stringify(inputValues, null, 4)}
-                {JSON.stringify(requestBody, null, 4)}
-              </div> */}
-
-              <br />
-
-              <div className={`error-container ${error ? "": "hidden"}`}>
-                <span className="error">{error}</span>              
-              </div>
-
-            </div>
-
-            <div className={`response-section ${Object.keys(response).length && !error ? "" : "hidden"}`} id="auth-api-response">
-
-              <div className="response-header">
-                <strong>Réponse:</strong>
-                <span 
-                  className={`custom-button ${showResponse ? "clicked": ""}`}
-                  onClick={() => setShowResponse(prev => !prev)}
-                >{showResponse ? 'On': 'Off'}</span>
-              </div>
-
-              <div className={`code-block ${showResponse ? "": "hidden"}`}>
-                <div className="code-content">
-                  <div className="code-header">
-                    <span className="code-lang">JSON Response</span>
-                    <button className="copy-btn" onClick={ () => copy(responseStr) }>Copy</button>
-                  </div>
-                  <SyntaxHighlighter language="json" style={vscDarkPlus}>
-                    {responseStr}
-                  </SyntaxHighlighter>
+              {/* Errors */}
+              {error && (
+                <div className="error-container">
+                  <span className="error">{error}</span>
                 </div>
-              </div>
-
+              )}
             </div>
+
+            {/* Response */}
+            {Object.keys(response).length > 0 && !error && (
+              <div className="response-section" id="auth-api-response">
+                <div className="response-header">
+                  <strong>Response:</strong>
+                  <span
+                    className={`custom-button ${showResponse ? "clicked" : ""}`}
+                    onClick={() => setShowResponse((prev) => !prev)}
+                  >
+                    {showResponse ? "On" : "Off"}
+                  </span>
+                </div>
+
+                {showResponse && (
+                  <div className="code-block">
+                    <div className="code-header">
+                      <span className="code-lang">JSON Response</span>
+                      <button className="copy-btn" onClick={() => copy(responseStr)}>Copy</button>
+                    </div>
+                    <SyntaxHighlighter language="json" style={vscDarkPlus}>
+                      {responseStr}
+                    </SyntaxHighlighter>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
+        {/* --------------------- REQUEST TAB -------------------------- */}
         {activeTab === "request" && (
           <div className="tab-content active">
+
+            {/* Headers */}
             <div className="code-block">
               <div className="code-header">
                 <span className="code-lang">Headers</span>
-                <button className="copy-btn" onClick={ () => copy(headers) }>Copy</button>
+                <button className="copy-btn" onClick={() => copy(headerCodeBlock)}>Copy</button>
               </div>
-              <div className="code-content">
-                <SyntaxHighlighter language="http" style={vscDarkPlus}>
-                  {headers}
-                </SyntaxHighlighter>
-              </div>
+              <SyntaxHighlighter language="http" style={vscDarkPlus}>
+                {headerCodeBlock}
+              </SyntaxHighlighter>
             </div>
 
-            {/* <br /> */}
-
-            <div className={`code-block ${ endpoint.method.toLowerCase() === 'get' ? 'hidden': '' }`}>
-              <div className="code-header">
-                <span className="code-lang">Request Body</span>
-                <button className="copy-btn" onClick={ () => copy(JSON.stringify(requestBody, null, 4)) }>Copy</button>
-              </div>
-              <div className="code-content">
+            {/* Request Body */}
+            {endpoint.method.toLowerCase() !== "get" && (
+              <div className="code-block">
+                <div className="code-header">
+                  <span className="code-lang">Request Body</span>
+                  <button
+                    className="copy-btn"
+                    onClick={() => copy(JSON.stringify(requestBody, null, 4))}
+                  >
+                    Copy
+                  </button>
+                </div>
                 <SyntaxHighlighter language="json" style={vscDarkPlus}>
                   {JSON.stringify(requestBody, null, 4)}
                 </SyntaxHighlighter>
               </div>
-            </div>
-
+            )}
           </div>
         )}
 
+        {/* ------------------- RESPONSE TAB ---------------------------- */}
         {activeTab === "response" && (
           <div className="tab-content active">
             <div className="code-block">
               <div className="code-header">
                 <span className="code-lang">JSON Response (200 OK)</span>
-                <button className="copy-btn" onClick={ () => copy(example) }>Copy</button>
+                <button className="copy-btn" onClick={() => copy(example)}>Copy</button>
               </div>
-
-              <div className="code-content">
-                <SyntaxHighlighter language="json" style={vscDarkPlus}>
-                  {`${example}`}
-                </SyntaxHighlighter>
-              </div>
+              <SyntaxHighlighter language="json" style={vscDarkPlus}>
+                {example}
+              </SyntaxHighlighter>
             </div>
           </div>
         )}
 
+        {/* ------------------- CODE TAB ------------------------------- */}
         {activeTab === "code" && (
           <div className="tab-content active">
             <div className="code-block">
               <div className="code-header">
                 <span className="code-lang">JavaScript (fetch)</span>
-                <button className="copy-btn" onClick={() => copy(codeContent)}>
-                  Copier
-                </button>
+                <button className="copy-btn" onClick={() => copy(codeContent)}>Copy</button>
               </div>
-
-              <div className="code-content">
-                <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
-                  {codeContent}
-                </SyntaxHighlighter>
-              </div>
+              <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
+                {codeContent}
+              </SyntaxHighlighter>
             </div>
           </div>
         )}
 
+        {/* ------------------- DETAILS TAB ---------------------------- */}
         {activeTab === "details" && (
-          <div className='text-block active' style={{ marginTop: 40, marginBottom: 20}}>
-              <div className='text-header'>Endpoint Description</div>
-              <div className="text-content">
-                {endpoint.details}
-              </div>
+          <div className="text-block active" style={{ marginTop: 40, marginBottom: 20 }}>
+            <div className="text-header">Endpoint Description</div>
+            <div className="text-content">{endpoint.details}</div>
           </div>
         )}
       </div>

@@ -19,6 +19,63 @@ const parseUrl = (url, values) => {
     return parsedUrl;
 };
 
+const buildObject = (parameters, values = {}, target="") => {
+  // Validation des entrées
+  if (!Array.isArray(parameters)) {
+    throw new Error("Les paramètres doivent être un tableau");
+  }
+  if (typeof values !== "object" || values === null) {
+    throw new Error("Les valeurs doivent être un objet non nul");
+  }
+
+  return parameters.reduce((body, parameter) => {
+    if (parameter.in === target) {
+      // Vérifier que parameter.name existe
+      if (!parameter.name) {
+        throw new Error("Un paramètre n'a pas de propriété 'name'");
+      }
+      // Utiliser une valeur par défaut si values[parameter.name] est undefined
+      body[parameter.name] = values[parameter.name] ?? null;
+    }
+    return body;
+  }, {});
+};
+
+/**
+ * Constructs a complete URL with query parameters.
+ * 
+ * @function buildUrl
+ * @param {string} url - The base URL to build upon
+ * @param {string[]} [parameters=[]] - Array of parameter names to extract from values
+ * @param {*} values - Object or array containing the values to map to parameters
+ * @returns {string} The complete URL with query parameters as a string
+ * 
+ * @example
+ * // Returns: "https://example.com?name=John&age=30"
+ * buildUrl("https://example.com", ["name", "age"], { name: "John", age: 30 })
+ * 
+ * @description
+ * This function builds a URL by:
+ * 1. Converting parameters and values into a query object using buildObject()
+ * 2. Creating a URL object from the provided base URL
+ * 3. Adding each parameter as a search parameter to the URL
+ * 4. Returning the complete URL as a string
+ */
+function buildUrl(url, parameters=[], values) {
+  const params = buildObject(parameters, values, "query")
+
+  // Crée un objet URL à partir de la chaîne
+  const urlObj = new URL(url);
+
+  // Parcourt les clés de l'objet
+  Object.keys(params).forEach(key => {
+    // Remplace la valeur du paramètre dans l'URL
+    urlObj.searchParams.set(key, params[key]);
+  });
+
+  // Retourne l'URL finale sous forme de string
+  return urlObj.toString();
+}
 
 /* -------------------------------------------- Construire le body ----------------------------------------- */
 
@@ -45,10 +102,15 @@ const buildRequestBody = (parameters, values = {}) => {
         throw new Error("Un paramètre n'a pas de propriété 'name'");
       }
       // Utiliser une valeur par défaut si values[parameter.name] est undefined
-      body[parameter.name] = values[parameter.name] ?? null;
+      if (parameter?.is_object && values[parameter.name]) {
+        body[parameter.name] = JSON.parse(values[parameter.name]) ?? null;
+      } 
+      else if (parameter.type == "integer") {
+        body[parameter.name] = Number.parseInt(values[parameter.name]) ?? null;
+      } else body[parameter.name] = values[parameter.name] ?? null;
     }
     return body;
   }, {});
 };
 
-export {parseUrl, buildRequestBody}
+export {parseUrl, buildRequestBody, buildObject, buildUrl}

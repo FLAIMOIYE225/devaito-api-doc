@@ -10,7 +10,9 @@ export const EndpointsItem = ({currentEndpoint, section, setActiveSection, setCu
         const searchLower = search.toLowerCase();
 
         if (section.name.toLowerCase().includes(searchLower)) return true;
-        return endpoint.title.toLowerCase().includes(searchLower);
+        return endpoint.title.toLowerCase().includes(searchLower) 
+        || 
+        endpoint.path.toLowerCase().includes(searchLower);
     }
 
 

@@ -58,6 +58,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+textarea {
+    resize: vertical;
+    height: 70px;
+}
+
 .custom-container {
     display: flex;
     min-height: 100vh;
@@ -874,4 +879,34 @@ body {
 
 .nav-section .section-active {
     color: black;
+}
+
+/* New classes */
+.code-editor {
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #1e1e1e;
+  color: white;
+}
+
+.editor-container {
+    /* background-color: #00936f; */
+    padding: 1px;
+}
+
+.error-marker {
+    color: var(--error-color);
+    display: block;
+    text-align: right;
+    padding-right: 18px;
+
+    /* Position */
+    position: relative;
+    margin-top: -22px; /* Remove l'espace que l'élément en apparaissen. Commenter cette ligne et tester pour voir les effets */
+    top: 25px;
+    /* background-color: #0284c7; */
+
+    z-index: 1; /* Pour faire apparaitre l'erreur au déssus du de l'éditeur. Lorsque je je ne l'avais pas ajouter, l'éditeur était dessiner avant l'erreur */
 }
