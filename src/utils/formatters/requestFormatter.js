@@ -87,6 +87,7 @@ function buildUrl(url, parameters=[], values) {
  * @throws {Error} - Si les paramètres ou les valeurs sont invalides.
  */
 const buildRequestBody = (parameters, values = {}) => {
+  values = {...values}
   // Validation des entrées
   if (!Array.isArray(parameters)) {
     throw new Error("Les paramètres doivent être un tableau");
@@ -101,13 +102,21 @@ const buildRequestBody = (parameters, values = {}) => {
       if (!parameter.name) {
         throw new Error("Un paramètre n'a pas de propriété 'name'");
       }
+      if (!values[parameter.name]) return body
       // Utiliser une valeur par défaut si values[parameter.name] est undefined
-      if (parameter?.is_object && values[parameter.name]) {
+      if (parameter?.isObject && values[parameter.name]) {
         body[parameter.name] = JSON.parse(values[parameter.name]) ?? null;
       } 
-      else if (parameter.type == "integer") {
+      else if (parameter.type === "integer") {
         body[parameter.name] = Number.parseInt(values[parameter.name]) ?? null;
-      } else body[parameter.name] = values[parameter.name] ?? null;
+      }
+      // else if (parameter.isObject && !values[parameter.name]) {
+      //   if (parameter.type==="Array") body[parameter.name] = [];
+      //   if (parameter.type==="Object") body[parameter.name] = parameter.example;
+      // } 
+      else body[parameter.name] = values[parameter.name] ?? null;
+
+      // if (!values[parameter.name] && typeof values[parameter.name] != "boolean" ) body[parameter.name] = null
     }
     return body;
   }, {});

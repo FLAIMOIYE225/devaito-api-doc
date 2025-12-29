@@ -84,7 +84,7 @@ export default function Sidebar({setCurrentSection, sections}){
                                     {section.subsections
                                         .filter( (subsection) =>  { // Filtrer les subsections pour éliminer celle qui ne match pas avec 'search'
                                             const searchLower = search.toLowerCase();
-
+                                            if ( subsection.name.toLowerCase().includes(searchLower) ) return true;
                                             return subsection.endpoints.some(endpoint => // Vérifier si au moins un des endpoints de la subsection match avec search
                                                 endpoint.title.toLowerCase().includes(searchLower)
                                                 ||
@@ -97,7 +97,7 @@ export default function Sidebar({setCurrentSection, sections}){
                                                 <div key={section.name} style={{marginLeft: 20}}>
                                                     <DropDownMenu section={section} activeSection={activeSection}>
                                                         <EndpointsItem setCurrentSection={setCurrentSection} section={section} currentEndpoint={currentEndpoint} setCurrentEndpoint={setCurrentEndpoint} activeSection={activeSection} setActiveSection={setActiveSection} search={search}></EndpointsItem>
-                                                    </DropDownMenu>               
+                                                    </DropDownMenu>          
                                                 </div>
                                             )                     
                                         })

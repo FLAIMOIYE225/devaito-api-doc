@@ -50,6 +50,12 @@ export async function postResource(url, data, options = {}) {
     });
     return response.data;
   } catch (error) {
+    if ([500, 404].includes(error.status) && !error.response.data.succes) 
+      return error.response.data  // Normalement je n'est pas à faire ça mais, le serveur renvoie une erreur 500
+                                  // ... alors que la rêquêtte à bien été traité. 
+                                  // Voir avec Medhi si c'est possible de changer le status code dans le cas de figure 
+                                  // ... suivant: "/make-payement" -> {success: False, "This payment method is not supported yet.Cash On Delivery"}
+    
     throw new Error(`Error sending data: ${error.message}`);
   }
 }

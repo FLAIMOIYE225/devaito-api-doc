@@ -108,7 +108,8 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
   };
 
 
-  const tryEndpoint = async () => {
+  const tryEndpoint = async (e) => {
+    e.preventDefault();
     setShowResponse(true);
     setIsloading(true);
     setError("");
@@ -164,7 +165,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
       setIsThereJsonError(false);
       setRequestBody(buildRequestBody(endpoint.parameters, inputValues));
     } catch (err) {
-      console.warn("Invalid JSON in editor");
+      // console.warn("Invalid JSON in editor");
       // notifyError("Invalid JSON in editor");
       setIsThereJsonError(true);
     }
@@ -216,13 +217,28 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
 
         {/* ------------------------- TRY TAB ------------------------- */}
         {activeTab === "try" && (
-          <div className="tab-content active">
+          <form 
+            className="tab-content active"
+            onSubmit={(e) => tryEndpoint(e)}
+          >
             <div className="try-it-section">
 
               {/* Shop name */}
               <div className="form-group">
-                <label className="form-label">Shop Name</label>
+                <label 
+                  className="form-label"
+                  title="The name (subdomain) of the target DEVAITO shop."
+                >
+                  Shop Name
+                </label>
+                <span 
+                  title="This field is required."
+                  className="field-required"
+                >
+                  *
+                </span>
                 <input
+                  required
                   type="text"
                   className="form-input"
                   name="shopname"
@@ -235,41 +251,71 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
               {/* Dynamic parameters */}
               {endpoint.parameters.map((p, index) => (
                 <div className="form-group" key={index}>
-                  <label className="form-label">
+                  <label 
+                    className="form-label"
+                    title={p?.description}
+                  >
                     {p.name} ({p.type}) {p.in === "header" ? "[Header]" : ""}
                   </label>
-                  {p.is_object && <div className="editor-container">
-                    {p.is_object && isThereJsonError && <small className="error-marker">• Syntax Error</small>}
-                    {/* <textarea
-                        className="form-input"
+
+                  {p?.required && 
+                    <span
+                      title={p?.requirementMsg ?? "This Field is required"}
+                      className="field-required"
+                    >
+                      *
+                    </span>
+                  }
+
+                  {
+                    p.isObject ? 
+                      <div className="editor-container">
+                        {p.isObject && isThereJsonError && <small className="error-marker">• Syntax Error</small>}
+                        {/* <textarea
+                            className="form-input"
+                            name={p.name}
+                            value={inputValues[p.name]}
+                            onChange={handleChange}
+                            placeholder={JSON.stringify(p.example)}
+                        /> */}
+                        <Editor
+                          // value={inputValues[p.name] || JSON.stringify(p?.example, null, 4)}
+                          value={inputValues[p.name]}
+                          onValueChange={code => handleChange(p.name, code)}
+                          highlight={code => highlight(code, languages.json)}
+                          padding={10}
+                          className="code-editor"
+                          title={p.objectStructure}
+                        />
+                      </div> :
+                    p?.inputType ?
+                      <input
+                          type={p?.inputType || "text"}
+                          className="form-input"
+                          name={p.name}
+                          value={inputValues[p.name]}
+                          onChange={handleChange}
+                          placeholder={p.example}
+                      /> :
+                      <select
                         name={p.name}
+                        id={p.name}
+                        className="form-select"
                         value={inputValues[p.name]}
                         onChange={handleChange}
-                        placeholder={JSON.stringify(p.example)}
-                    /> */}
-                    <Editor
-                      value={inputValues[p.name]}
-                      onValueChange={code => handleChange(p.name, code)}
-                      highlight={code => highlight(code, languages.json)}
-                      padding={10}
-                      className="code-editor"
-                    />
-                  </div>}
-                  {!p.is_object &&
-                    <input
-                        type={p.inputType || "text"}
-                        className="form-input"
-                        name={p.name}
-                        value={inputValues[p.name]}
-                        onChange={handleChange}
-                        placeholder={p.example}
-                    />
+                      >
+                        <option value=""></option>
+                        {p.options.map((option) => <option value={option}>{option}</option>)}
+                      </select>
                   }
                 </div>
               ))}
 
               {/* Submit Button */}
-              <button className="btn btn-primary" onClick={tryEndpoint}>
+              <button 
+                type="submit"
+                className="btn btn-primary"
+              >
                 <div className={`spinner-container ${isLoading ? "" : "hidden"}`}>
                   <div className="spinner-border" role="status" style={{ width: 20, height: 20 }}>
                     <span className="visually-hidden"></span>
@@ -312,7 +358,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
                 )}
               </div>
             )}
-          </div>
+          </form>
         )}
 
         {/* --------------------- REQUEST TAB -------------------------- */}
@@ -385,6 +431,18 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
           <div className="text-block active" style={{ marginTop: 40, marginBottom: 20 }}>
             <div className="text-header">Endpoint Description</div>
             <div className="text-content">{endpoint.details}</div>
+            <div className="custom-link-container">
+              {endpoint?.detail_link &&
+                <a 
+                  className="custom-link" 
+                  href={`${endpoint.detail_link}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Click here for more details
+                </a>
+              }
+            </div>
           </div>
         )}
       </div>
