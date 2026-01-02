@@ -19,7 +19,6 @@ import { notifySuccess, notifyError } from "../utils/notify";
 import { getResource, postResource, requestResource } from "../api/requestHandler";
 
 export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
-
   /* -------------------------------------------- */
   /* STATES                                       */
   /* -------------------------------------------- */
@@ -249,7 +248,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
               </div>
 
               {/* Dynamic parameters */}
-              {endpoint.parameters.map((p, index) => (
+              {endpoint?.parameters?.map((p, index) => (
                 <div className="form-group" key={index}>
                   <label 
                     className="form-label"
@@ -305,7 +304,7 @@ export default function Endpoint({ endpoint, baseShopUrl, setToken, token }) {
                         onChange={handleChange}
                       >
                         <option value=""></option>
-                        {p.options.map((option) => <option value={option}>{option}</option>)}
+                        {p?.options?.map((option) => <option value={option}>{option}</option>)}
                       </select>
                   }
                 </div>

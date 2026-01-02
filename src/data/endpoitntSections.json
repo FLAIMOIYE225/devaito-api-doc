@@ -525,7 +525,7 @@
                             {
                                 "name": "image",
                                 "in": "body",
-                                "type": "image",
+                                "type": "image (base 64)",
                                 "inputType": "file"
                             }
                         ],
@@ -571,59 +571,61 @@
             {
                 "name": "Customers Cart",
                 "description": "The following endpoints in this section concern customers' cart.",
-                "endpoints": [
+                "endpoints": [ 
                     {
-                    "id": "cart-list",
-                    "title": "List Cart Items",
-                    "method": "GET",
-                    "path": "/api/cart/list",
-                    "description": "Retrieve all items in the authenticated customer's shopping cart.",
-                    "tokenRequired": true,
-                    "parameters": [
-                        {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "type": "integer",
-                        "description": "Page number.",
-                        "example": 1
+                        "id": "cart-list",
+                        "title": "List Cart Items",
+                        "method": "GET",
+                        "path": "/api/cart/list",
+                        "description": "Retrieve all items in the authenticated customer's shopping cart.",
+                        "tokenRequired": true,
+                        "parameters": [
+                            {
+                                "name": "page",
+                                "in": "query",
+                                "required": false,
+                                "type": "integer",
+                                "inputType":"number",
+                                "description": "Page number.",
+                                "example": 1
+                            },
+                            {
+                                "name": "per_page",
+                                "in": "query",
+                                "required": false,
+                                "type": "integer",
+                                "inputType":"number",
+                                "description": "Items per page.",
+                                "example": 8
+                            }
+                        ],
+                        "request": {
+                            "headers": {
+                                "Accept": "application/json"
+                            },
+                            "body": {}
                         },
-                        {
-                        "name": "per_page",
-                        "in": "query",
-                        "required": false,
-                        "type": "integer",
-                        "description": "Items per page.",
-                        "example": 8
-                        }
-                    ],
-                    "request": {
-                        "headers": {
-                            "Accept": "application/json"
+                        "responses": {
+                            "200": {
+                            "description": "Cart items list.",
+                            "example": {
+                                "success": true,
+                                "cartItems": [],
+                                "items_per_page": 10,
+                                "total_items": 5,
+                                "current_page": 1,
+                                "total_pages": 1
+                            }
+                            }
                         },
-                        "body": {}
-                    },
-                    "responses": {
-                        "200": {
-                        "description": "Cart items list.",
-                        "example": {
-                            "success": true,
-                            "cartItems": [],
-                            "items_per_page": 10,
-                            "total_items": 5,
-                            "current_page": 1,
-                            "total_pages": 1
+                        "codeSamples": {
+                            "javascript": [
+                            "const res = await fetch(baseUrl + '/cart/list?page=1&per_page=8', {",
+                            "  headers: { Authorization: `Bearer ${token}` }",
+                            "});",
+                            "const data = await res.json();"
+                            ]
                         }
-                        }
-                    },
-                    "codeSamples": {
-                        "javascript": [
-                        "const res = await fetch(baseUrl + '/cart/list?page=1&per_page=8', {",
-                        "  headers: { Authorization: `Bearer ${token}` }",
-                        "});",
-                        "const data = await res.json();"
-                        ]
-                    }
                     },
                     {
                         "id": "cart-add",
@@ -632,12 +634,15 @@
                         "path": "/api/cart/add",
                         "description": "Add an item to the authenticated customer's cart.",
                         "tokenRequired": true,
-                        "parameters": [
-                                {
+                        "details": "TEMP",
+                        "detail_link": "https://developpers.devaito.com/public/api-documentation/api-management/customers/#post-cartadd",
+                        "parameters": [ 
+                            {
                                 "name": "product_id",
                                 "in": "body",
                                 "required": true,
                                 "type": "string",
+                                "inputType":"text",
                                 "description": "Product ID.",
                                 "example": "6"
                             },
@@ -646,6 +651,7 @@
                                 "in": "body",
                                 "required": true,
                                 "type": "integer",
+                                "inputType":"number",
                                 "description": "Quantity.",
                                 "example": 1
                             },
@@ -654,6 +660,7 @@
                                 "in": "body",
                                 "required": false,
                                 "type": "integer",
+                                "inputType":"number",
                                 "description": "Color ID.",
                                 "example": 4
                             },
@@ -662,6 +669,7 @@
                                 "in": "body",
                                 "required": false,
                                 "type": "string",
+                                "inputType":"text",
                                 "description": "Color name.",
                                 "example": "Red"
                             },
@@ -679,7 +687,7 @@
                                         "child_Name": "L",
                                         "parent_name": "Size"
                                     }
-                            }
+                                }
                             }
                         ],
                         "request": {
@@ -711,11 +719,11 @@
                         },
                         "codeSamples": {
                             "javascript": [
-                            "await fetch(baseUrl + '/cart/add', {",
-                            "  method: 'POST',",
-                            "  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },",
-                            "  body: JSON.stringify({ product_id: 6, quantity: 1 })",
-                            "});"
+                                "await fetch(baseUrl + '/cart/add', {",
+                                "  method: 'POST',",
+                                "  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },",
+                                "  body: JSON.stringify({ product_id: 6, quantity: 1 })",
+                                "});"
                             ]
                         }
                     },
@@ -726,73 +734,74 @@
                         "path": "/api/cart/remove-item",
                         "description": "Remove a specific item from the authenticated customer's cart.",
                         "tokenRequired": true,
-                    "parameters": [
-                        {
-                        "name": "cart_item_id",
-                        "in": "body",
-                        "required": true,
-                        "type": "integer",
-                        "description": "Cart item ID to remove.",
-                        "example": 17
-                        }
-                    ],
-                    "request": {
-                        "headers": {
-                            "Accept": "application/json"
+                        "parameters": [
+                            {
+                                "name": "cart_item_id",
+                                "in": "body",
+                                "required": true,
+                                "type": "integer",
+                                "inputType":"text",
+                                "description": "Cart item ID to remove.",
+                                "example": 17
+                            }
+                        ],
+                        "request": {
+                            "headers": {
+                                "Accept": "application/json"
+                            },
+                            "body": {}
                         },
-                        "body": {}
-                    },
-                    "responses": {
-                        "200": {
-                        "description": "Item removed.",
-                        "example": {
-                            "success": true,
-                            "message": "Item has been removed"
+                        "responses": {
+                            "200": {
+                            "description": "Item removed.",
+                            "example": {
+                                "success": true,
+                                "message": "Item has been removed"
+                            }
+                            }
+                        },
+                        "codeSamples": {
+                            "javascript": [
+                            "await fetch(baseUrl + '/cart/remove-item', {",
+                            "  method: 'DELETE',",
+                            "  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },",
+                            "  body: JSON.stringify({ cart_item_id: 17 })",
+                            "});"
+                            ]
                         }
-                        }
-                    },
-                    "codeSamples": {
-                        "javascript": [
-                        "await fetch(baseUrl + '/cart/remove-item', {",
-                        "  method: 'DELETE',",
-                        "  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },",
-                        "  body: JSON.stringify({ cart_item_id: 17 })",
-                        "});"
-                        ]
-                    }
                     },
                     {
-                    "id": "cart-clear",
-                    "title": "Clear Cart",
-                    "method": "DELETE",
-                    "path": "/api/cart/clear",
-                    "description": "Clear the authenticated customer's cart.",
-                    "parameters": [],
-                    "tokenRequired": true,
-                    "request": {
-                        "headers": {
-                            "Accept": "application/json"
+                        "id": "cart-clear",
+                        "title": "Clear Cart",
+                        "method": "DELETE",
+                        "path": "/api/cart/clear",
+                        "description": "Clear the authenticated customer's cart.",
+                        "parameters": [],
+                        "tokenRequired": true,
+                        "request": {
+                            "headers": {
+                                "Accept": "application/json"
+                            },
+                            "body": {}
                         },
-                        "body": {}
-                    },
-                    "responses": {
-                        "200": {
-                        "description": "Cart cleared.",
-                        "example": {
-                            "success": true,
-                            "message": "Panier vidé avec succès"
+                        "responses": {
+                                "200": {
+                                "description": "Cart cleared.",
+                                "example": {
+                                    "success": true,
+                                    "message": "Panier vidé avec succès"
+                                }
+                            }
+                        },
+                        "codeSamples": {
+                            "javascript": [
+                            "const response = await fetch(baseUrl + '/cart/clear', {",
+                            "  method: 'DELETE',",
+                            "  headers: { Authorization: `Bearer ${token}` }",
+                            "});",
+                            "const data = await response.json();"
+                            ]
                         }
-                        }
-                    },
-                    "codeSamples": {
-                        "javascript": [
-                        "const response = await fetch(baseUrl + '/cart/clear', {",
-                        "  method: 'DELETE',",
-                        "  headers: { Authorization: `Bearer ${token}` }",
-                        "});",
-                        "const data = await response.json();"
-                        ]
-                    }
                     },
                     {
                         "id": "apply-coupon",
@@ -806,76 +815,78 @@
                                 "in": "header",
                                 "required": false,
                                 "type": "string",
+                                "inputType":"text",
                                 "description": "Optional. User currency (MAD, USD, EUR...). If missing, the store default is used.",
                                 "example": "MAD"
                             },
                             {
-                            "name": "coupon_code",
-                            "in": "body",
-                            "required": true,
-                            "type": "string",
-                            "description": "Coupon code to apply.",
-                            "example": "test"
+                                "name": "coupon_code",
+                                "in": "body",
+                                "required": true,
+                                "type": "string",
+                                "inputType":"text",
+                                "description": "Coupon code to apply.",
+                                "example": "test"
                             },
                             {
                                 "name": "customer_id",
                                 "in": "body",
                                 "required": false,
                                 "type": "integer",
+                                "inputType":"number",
                                 "description": "Customer ID if the user is authenticated.",
                                 "example": 9
                             },
                             {
-                            "   name": "items",
+                                "name": "items",
                                 "in": "body",
                                 "required": true,
                                 "is_array": true,
                                 "isObject": true,
                                 "type": "array<{id, qauntity, color, variant}>",
-                                "input_type": "text",
                                 "description": "Array of cart items."
                             }
                         ],
-                    "request": {
-                        "headers": {
-                            "Accept": "application/json",
-                            "store-currency": "MAD"
+                        "request": {
+                            "headers": {
+                                "Accept": "application/json",
+                                "store-currency": "MAD"
+                            },
+                            "body": {}
                         },
-                        "body": {}
-                    },
-                    "responses": {
-                        "200": {
-                        "description": "Valid coupon.",
-                        "example": {
-                            "success": true,
-                            "message": "Coupon applied successfully!",
-                            "coupon_code": "test",
-                            "discount_amount": 10,
-                            "original_subtotal": 65,
-                            "new_total": 55,
-                            "free_shipping": false,
-                            "currency_symbol": "MAD",
-                            "currency_code": "MAD"
-                        }
+                        "responses": {
+                            "200": {
+                            "description": "Valid coupon.",
+                            "example": {
+                                "success": true,
+                                "message": "Coupon applied successfully!",
+                                "coupon_code": "test",
+                                "discount_amount": 10,
+                                "original_subtotal": 65,
+                                "new_total": 55,
+                                "free_shipping": false,
+                                "currency_symbol": "MAD",
+                                "currency_code": "MAD"
+                            }
+                            },
+                            "400": {
+                            "description": "Invalid coupon.",
+                            "example": {
+                                "success": false,
+                                "message": "Coupon code not found."
+                            }
+                            }
                         },
-                        "400": {
-                        "description": "Invalid coupon.",
-                        "example": {
-                            "success": false,
-                            "message": "Coupon code not found."
+                        "codeSamples": {
+                            "javascript": [
+                            "const response = await fetch(baseUrl + '/cart/apply-coupon', {",
+                            "  method: 'POST',",
+                            "  headers: { 'Content-Type': 'application/json', 'store-currency': 'MAD', Authorization: `Bearer ${token}` },",
+                            "  body: JSON.stringify({ coupon_code: 'test', items: [] })",
+                            "});",
+                            "const data = await response.json();"
+                            ]
                         }
-                        }
-                    },
-                    "codeSamples": {
-                        "javascript": [
-                        "const response = await fetch(baseUrl + '/cart/apply-coupon', {",
-                        "  method: 'POST',",
-                        "  headers: { 'Content-Type': 'application/json', 'store-currency': 'MAD', Authorization: `Bearer ${token}` },",
-                        "  body: JSON.stringify({ coupon_code: 'test', items: [] })",
-                        "});",
-                        "const data = await response.json();"
-                        ]
-                    }
                     }
                 ]
             },
@@ -1642,7 +1653,7 @@
                     {
                         "id": "fetch-products-category",
                         "method": "GET",
-                        "path": "/api/fetch-all-products-category/{slug}",
+                        "path": "/api/fetch-all-products-category?slug=",
                         "title": "Get Products By Category Slug",
                         "details":"This endpoint returns a complete list of all products in the shop that belong to the category specified by the slug. The slug is a unique identifier formed from the category name. To form the slug, simply lowercase the category name, remove all special characters, and replace spaces with hyphens (-). However, you will find the slug in the response when you retrieve the list of all categories.",
                         "isProtected": false,
@@ -1650,7 +1661,7 @@
                         "parameters": [
                             {
                                 "name": "slug",
-                                "in": "path",
+                                "in": "query",
                                 "type": "string",
                                 "inputType": "text",
                                 "example": "location-voiture-luxe"
@@ -1838,7 +1849,8 @@
                         "method": "GET",
                         "path": "/api/product-details/{slug}",
                         "title": "Get Products details By its Slug",
-                        "details":"This endpoint returns details about a specific product. There are two types of responses, \"customizable\" and \"basic\". Unlike \"/api/get-product/{slug}\", this endpoint returns the product data in a specific format. To know which format to use, you must first read this ‘product_type’ key in the response, which tells you the type of product you have. In the example, you will get the response in the format of a basic product.",
+                        "details":"This endpoint returns details about a specific product. Unlike \"/api/get-product/{slug}\", this endpoint returns the product data in a specific format. There are two types of product (\"customizable\" and \"basic\"); the response format depends on the type of product. To know the format to use, you must first read the ‘product_type’ key in the response, which tells you the type of product you have. In the example, you will get the response in the format of a basic product.",
+                        "detail_link": "https://developpers.devaito.com/public/api-documentation/api-management/customers/#get-product-detailsslug",
                         "isProtected": false,
                         "description": "Get details about a specific product.",
                         "parameters": [
